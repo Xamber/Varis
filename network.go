@@ -24,9 +24,6 @@ func (n *Network) Calculate(input []float64) []float64 {
 	return output
 }
 
-func (n *Network) AddLayer(neurons int) {
-	n.layers = append(n.layers, CreateLayer(neurons))
-}
 
 func (n Network) HandleInput(input []float64) {
 

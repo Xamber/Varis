@@ -9,7 +9,13 @@ func CreateNetwork(layers ...int) Network {
 	var network Network
 
 	for _, neurons := range layers {
-		network.AddLayer(neurons)
+
+		layer := Layer{}
+		for i := 0; i < neurons; i++ {
+			layer.neurons = append(layer.neurons, Neuroner(CreateNeuron()))
+		}
+
+		network.layers = append(network.layers, layer)
 	}
 
 	for l := 0; l < len(network.layers)-1; l++ {
@@ -32,17 +38,6 @@ func CreateNetwork(layers ...int) Network {
 
 	return network
 
-}
-
-func CreateLayer(neuronsCount int,) Layer {
-
-	var layer = Layer{}
-
-	for i := 0; i < neuronsCount; i++ {
-		layer.neurons = append(layer.neurons, Neuroner(CreateNeuron()))
-	}
-
-	return layer
 }
 
 func CreateNeuron() *Neuron {
