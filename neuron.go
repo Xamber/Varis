@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"fmt"
 )
 
 type Neuron interface {
@@ -15,6 +16,10 @@ type Neuron interface {
 	Broadcast(value float64)
 
 	CollectSignals() []float64
+}
+
+type LiveNeuron interface {
+	Alive()
 }
 
 type BaseNeuron struct {
@@ -75,6 +80,10 @@ func CreateHiddenNeuron() *HiddenNeuron {
 	return &neuron
 }
 
+func (n *HiddenNeuron) Alive() {
+	fmt.Println("Hidden Neuron Run")
+}
+
 type OutputNeuron struct {
 	BaseNeuron
 }
@@ -82,4 +91,8 @@ type OutputNeuron struct {
 func CreateOutputNeuron() *OutputNeuron {
 	neuron := OutputNeuron{BaseNeuron{bias: rand.Float64()}}
 	return &neuron
+}
+
+func (n *OutputNeuron) Alive() {
+	fmt.Println("Output Neuron Run")
 }

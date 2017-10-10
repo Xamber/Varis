@@ -4,7 +4,10 @@ import "fmt"
 
 type Layer interface {
 	GetNeurons() []Neuron
+	GetCountOfNeurons() int
+	GetNeuronByIndex(index int) Neuron
 	PrintInfo()
+	RunAllNeurons()
 }
 
 type BaseLayer struct {
@@ -13,6 +16,28 @@ type BaseLayer struct {
 
 func (l *BaseLayer) GetNeurons() []Neuron {
 	return l.neurons
+}
+
+func (l *BaseLayer) GetCountOfNeurons() int {
+	return len(l.neurons)
+}
+
+func (l *BaseLayer) GetNeuronByIndex(index int) Neuron {
+	return l.neurons[index]
+}
+
+func (l *BaseLayer) RunAllNeurons() {
+	for _, neuron := range(l.GetNeurons()) {
+		go neuron.(LiveNeuron).Alive()
+	}
+}
+
+func ConnectLayers(now Layer, next Layer)  {
+	for i := range now.GetNeurons() {
+		for o := range next.GetNeurons() {
+			CreateSynapse(now.GetNeuronByIndex(i), next.GetNeuronByIndex(o))
+		}
+	}
 }
 
 func (l *BaseLayer) PrintInfo() {
@@ -51,7 +76,7 @@ type HiddenLayer struct {
 func CreateHiddenLayer(neuronsCount int) *HiddenLayer {
 	layer := HiddenLayer{}
 
-	for i := 0; i < neuronsCount; i++ {
+	for i := 0; i <= neuronsCount; i++ {
 		layer.neurons = append(layer.neurons, Neuron(CreateHiddenNeuron()))
 	}
 

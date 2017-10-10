@@ -10,13 +10,17 @@ type Synapse struct {
 	out    chan float64
 }
 
-func CreateSynapse() *Synapse {
-	syn := Synapse{
+func CreateSynapse(in Neuron, out Neuron) {
+	syn := &Synapse{
 		weight: rand.Float64(),
 		in:     make(chan float64),
 		out:    make(chan float64),
 	}
-	return &syn
+
+	in.AddOutputSynapse(syn)
+	out.AddInputSynapse(syn)
+
+	go syn.Alive()
 }
 
 func (s *Synapse) Alive() {

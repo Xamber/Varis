@@ -1,9 +1,9 @@
 package main
 
 type Network struct {
-	inputLayer Layer
+	inputLayer   Layer
 	hiddenLayers []Layer
-	outputLayer Layer
+	outputLayer  Layer
 }
 
 func CreateNetwork(layers ...int) Network {
@@ -22,23 +22,20 @@ func CreateNetwork(layers ...int) Network {
 		}
 	}
 
-	//for l := 0; l < len(network.layers)-1; l++ {
-	//
-	//	now := *network.layers[l].GetNeurons()
-	//	next := *network.layers[l+1].GetNeurons()
-	//
-	//	for i := range now {
-	//		for o := range next {
-	//			CreateSynapse(now[i], next[o])
-	//		}
-	//	}
-	//}
-	//
-	//for l := 0; l < len(network.layers); l++ {
-	//	for n := 0; n < len(network.layers[l].neurons); n++ {
-	//		go network.layers[l].neurons[n].Alive()
-	//	}
-	//}
+	for l := 0; l < len(network.hiddenLayers)-1; l++ {
+		now := network.hiddenLayers[l]
+		next := network.hiddenLayers[l+1]
+		ConnectLayers(now, next)
+	}
+
+	ConnectLayers(network.inputLayer, network.hiddenLayers[0])
+	ConnectLayers(network.hiddenLayers[len(network.hiddenLayers)-1], network.outputLayer)
+
+	for l := 0; l < len(network.hiddenLayers); l++ {
+		network.hiddenLayers[l].RunAllNeurons()
+	}
+
+	network.outputLayer.RunAllNeurons()
 
 	return network
 }
