@@ -19,7 +19,7 @@ func CreateNetwork(layers ...int) Network {
 
 		for i := range now {
 			for o := range next {
-				CreateSynapse(&now[i], &next[o])
+				CreateSynapse(now[i], next[o])
 			}
 		}
 	}
@@ -39,17 +39,15 @@ func CreateLayer(neuronsCount int,) Layer {
 	var layer = Layer{}
 
 	for i := 0; i < neuronsCount; i++ {
-		layer.neurons = append(layer.neurons, CreateNeuron())
+		layer.neurons = append(layer.neurons, Neuroner(CreateNeuron()))
 	}
 
 	return layer
 }
 
-func CreateNeuron() Neuron {
-
+func CreateNeuron() *Neuron {
 	neuron := Neuron{bias: rand.Float64(), output:make(chan float64)}
-
-	return neuron
+	return &neuron
 }
 
 func CreateSynapse(in Neuroner, out Neuroner) {

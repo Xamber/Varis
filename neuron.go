@@ -1,13 +1,23 @@
 package main
 
-type BaseNeuron struct {
-	inSynapses  []*Synapse
-	outSynapses []*Synapse
-}
-
 type Neuroner interface {
 	AddOutputSynapse(syn *Synapse)
 	AddInputSynapse(syn *Synapse)
+
+	Handle(value float64)
+	Broadcast(value float64)
+
+	CollectSignals() []float64
+	Alive()
+	GetOutput() chan float64
+
+	GetOutputSynapses() []*Synapse
+	GetInputSynapses() []*Synapse
+}
+
+type BaseNeuron struct {
+	inSynapses  []*Synapse
+	outSynapses []*Synapse
 }
 
 type Neuron struct {
@@ -24,17 +34,25 @@ func (n *BaseNeuron) AddInputSynapse(syn *Synapse) {
 	n.inSynapses = append(n.inSynapses, syn)
 }
 
-func (n *Neuron) Handle(value float64) {
+func (n *BaseNeuron) GetOutputSynapses() []*Synapse {
+	return n.outSynapses
+}
+
+func (n *BaseNeuron) GetInputSynapses() []*Synapse {
+	return n.inSynapses
+}
+
+func (n *BaseNeuron) Handle(value float64) {
 	n.Broadcast(value)
 }
 
-func (n *Neuron) Broadcast(value float64) {
+func (n *BaseNeuron) Broadcast(value float64) {
 	for o := range n.outSynapses {
 		n.outSynapses[o].in <- value
 	}
 }
 
-func (n *Neuron) CollectSignals() []float64 {
+func (n *BaseNeuron) CollectSignals() []float64 {
 
 	inputSignals := make([]float64, len(n.inSynapses))
 
@@ -43,6 +61,10 @@ func (n *Neuron) CollectSignals() []float64 {
 	}
 
 	return inputSignals
+}
+
+func (n *Neuron) GetOutput() chan float64{
+	return n.output
 }
 
 func (n *Neuron) Alive() {

@@ -1,9 +1,9 @@
 package main
 
 type Layer struct {
-	neurons []Neuron
+	neurons []Neuroner
 }
 
-func (l *Layer) GetNeurons() *[]Neuron {
+func (l *Layer) GetNeurons() *[]Neuroner {
 	return &l.neurons
 }
