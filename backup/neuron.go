@@ -1,26 +1,29 @@
 package main
 
-import (
-	"math/rand"
-)
-
-type Neuron interface {
+type Neuroner interface {
 	AddOutputSynapse(syn *Synapse)
 	AddInputSynapse(syn *Synapse)
-
-	GetOutputSynapses() []*Synapse
-	GetInputSynapses() []*Synapse
 
 	Handle(value float64)
 	Broadcast(value float64)
 
 	CollectSignals() []float64
+	Alive()
+	GetOutput() chan float64
+
+	GetOutputSynapses() []*Synapse
+	GetInputSynapses() []*Synapse
 }
 
 type BaseNeuron struct {
-	bias        float64
 	inSynapses  []*Synapse
 	outSynapses []*Synapse
+}
+
+type Neuron struct {
+	bias   float64
+	output chan float64
+	BaseNeuron
 }
 
 func (n *BaseNeuron) AddOutputSynapse(syn *Synapse) {
@@ -50,36 +53,38 @@ func (n *BaseNeuron) Broadcast(value float64) {
 }
 
 func (n *BaseNeuron) CollectSignals() []float64 {
+
 	inputSignals := make([]float64, len(n.inSynapses))
+
 	for i := range inputSignals {
 		inputSignals[i] = <-n.inSynapses[i].out
 	}
+
 	return inputSignals
 }
 
-type InputNeuron struct {
-	BaseNeuron
+func (n *Neuron) GetOutput() chan float64{
+	return n.output
 }
 
-func CreateInputNeuron() *InputNeuron {
-	neuron := InputNeuron{BaseNeuron{bias: rand.Float64()}}
-	return &neuron
-}
+func (n *Neuron) Alive() {
 
-type HiddenNeuron struct {
-	BaseNeuron
-}
+	for {
 
-func CreateHiddenNeuron() *HiddenNeuron {
-	neuron := HiddenNeuron{BaseNeuron{bias: rand.Float64()}}
-	return &neuron
-}
+		if len(n.inSynapses) == 0 {
+			break
+		}
 
-type OutputNeuron struct {
-	BaseNeuron
-}
+		inputSignals := n.CollectSignals()
+		value := sum(inputSignals) + n.bias
+		outputSignal := activation_sigmoid(value)
 
-func CreateOutputNeuron() *OutputNeuron {
-	neuron := OutputNeuron{BaseNeuron{bias: rand.Float64()}}
-	return &neuron
+		if len(n.outSynapses) == 0 {
+			n.output <- outputSignal
+			//fmt.Println(outputSignal)
+		} else {
+			n.Broadcast(outputSignal)
+		}
+	}
+
 }

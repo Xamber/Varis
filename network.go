@@ -1,69 +1,55 @@
 package main
 
-import (
-	"fmt"
-)
-
 type Network struct {
-	layers []Layer
-	output []chan float64
+	inputLayer Layer
+	hiddenLayers []Layer
+	outputLayer Layer
 }
 
-func (n *Network) Calculate(input []float64) []float64 {
+func CreateNetwork(layers ...int) Network {
 
-	n.HandleInput(input)
+	var network Network
 
-	outputNeurons := *n.GetOutputNeurons()
+	for index, neurons := range layers {
 
-	output := make([]float64, len(outputNeurons))
-
-	for i := range outputNeurons {
-		output[i] = <-outputNeurons[i].GetOutput()
+		switch index {
+		case 0:
+			network.inputLayer = CreateInputLayer(neurons)
+		case layers[len(layers)-1]:
+			network.outputLayer = CreateOutputLayer(neurons)
+		default:
+			network.hiddenLayers = append(network.hiddenLayers, CreateHiddenLayer(neurons))
+		}
 	}
 
-	return output
-}
+	//for l := 0; l < len(network.layers)-1; l++ {
+	//
+	//	now := *network.layers[l].GetNeurons()
+	//	next := *network.layers[l+1].GetNeurons()
+	//
+	//	for i := range now {
+	//		for o := range next {
+	//			CreateSynapse(now[i], next[o])
+	//		}
+	//	}
+	//}
+	//
+	//for l := 0; l < len(network.layers); l++ {
+	//	for n := 0; n < len(network.layers[l].neurons); n++ {
+	//		go network.layers[l].neurons[n].Alive()
+	//	}
+	//}
 
-
-func (n Network) HandleInput(input []float64) {
-
-	inputNeurons := *n.GetInputNeurons()
-
-	if len(input) != len(inputNeurons) {
-		panic("Check count of input value")
-	}
-
-	for i := range inputNeurons {
-		inputNeurons[i].Handle(input[i])
-	}
-}
-
-func (n Network) GetCountOfLayers() int {
-	return len(n.layers)
-}
-
-func (n Network) GetInputNeurons() *[]Neuroner {
-	return n.layers[0].GetNeurons()
-}
-
-func (n Network) GetOutputNeurons() *[]Neuroner {
-	return n.layers[n.GetCountOfLayers()-1].GetNeurons()
+	return network
 }
 
 func (n Network) ShowStatistic() {
-	for _, layer := range n.layers {
-		fmt.Println("Layer:")
 
-		for index, neuron := range *layer.GetNeurons() {
-			fmt.Println("    Neuron (", index, "): ", &neuron)
+	n.inputLayer.PrintInfo()
 
-			for _, synapse := range neuron.GetInputSynapses() {
-				fmt.Println("        InSynapse: ", synapse)
-			}
-
-			for _, synapse := range neuron.GetOutputSynapses() {
-				fmt.Println("        OutSynapse: ", synapse)
-			}
-		}
+	for _, layer := range n.hiddenLayers {
+		layer.PrintInfo()
 	}
+
+	n.outputLayer.PrintInfo()
 }

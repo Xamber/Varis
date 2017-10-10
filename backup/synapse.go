@@ -1,22 +1,9 @@
 package main
 
-import (
-	"math/rand"
-)
-
 type Synapse struct {
 	weight float64
 	in     chan float64
 	out    chan float64
-}
-
-func CreateSynapse() *Synapse {
-	syn := Synapse{
-		weight: rand.Float64(),
-		in:     make(chan float64),
-		out:    make(chan float64),
-	}
-	return &syn
 }
 
 func (s *Synapse) Alive() {
