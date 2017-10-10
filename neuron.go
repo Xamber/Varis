@@ -23,6 +23,10 @@ type LiveNeuron interface {
 	Alive()
 }
 
+type RedirectNeuron interface {
+	GetOutput() chan float64
+}
+
 type BaseNeuron struct {
 	bias        float64
 	inSynapses  []*Synapse
@@ -89,7 +93,6 @@ func CreateHiddenNeuron() *HiddenNeuron {
 }
 
 func (n *HiddenNeuron) Alive() {
-	//fmt.Println("Hidden Neuron Run")
 	for {
 		value := n.Activation()
 		n.Broadcast(value)
@@ -98,19 +101,24 @@ func (n *HiddenNeuron) Alive() {
 
 type OutputNeuron struct {
 	BaseNeuron
+	output chan float64
 }
 
 func CreateOutputNeuron() *OutputNeuron {
-	neuron := OutputNeuron{BaseNeuron{bias: rand.Float64()}}
+	neuron := OutputNeuron{BaseNeuron{bias: rand.Float64()}, make(chan float64)}
 	return &neuron
 }
 
+func (n *OutputNeuron) GetOutput() chan float64 {
+	return n.output
+}
+
 func (n *OutputNeuron) Alive() {
-	//fmt.Println("Output Neuron Run")
 	for {
 		value := n.Activation()
 		fmt.Println("Output Neuron recieved values")
 		fmt.Println(value)
+		n.output <- value
 	}
 
 }
