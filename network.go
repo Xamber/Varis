@@ -11,11 +11,10 @@ func CreateNetwork(layers ...int) Network {
 	var network Network
 
 	for index, neurons := range layers {
-
 		switch index {
 		case 0:
 			network.inputLayer = CreateInputLayer(neurons)
-		case layers[len(layers)-1]:
+		case len(layers)-1:
 			network.outputLayer = CreateOutputLayer(neurons)
 		default:
 			network.hiddenLayers = append(network.hiddenLayers, CreateHiddenLayer(neurons))
@@ -38,6 +37,17 @@ func CreateNetwork(layers ...int) Network {
 	network.outputLayer.RunAllNeurons()
 
 	return network
+}
+
+func (n Network) Calculate(input []float64) {
+
+	if len(input) != n.inputLayer.GetCountOfNeurons() {
+		panic("Check count of input value")
+	}
+
+	for i, n := range n.inputLayer.GetNeurons() {
+		n.Handle(input[i])
+	}
 }
 
 func (n Network) ShowStatistic() {

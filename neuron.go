@@ -16,6 +16,7 @@ type Neuron interface {
 	Broadcast(value float64)
 
 	CollectSignals() []float64
+	Activation() float64
 }
 
 type LiveNeuron interface {
@@ -62,6 +63,13 @@ func (n *BaseNeuron) CollectSignals() []float64 {
 	return inputSignals
 }
 
+func (n *BaseNeuron) Activation() float64 {
+	inputSignals := n.CollectSignals()
+	value := sum(inputSignals) + n.bias
+	outputSignal := activation_sigmoid(value)
+	return outputSignal
+}
+
 type InputNeuron struct {
 	BaseNeuron
 }
@@ -81,7 +89,11 @@ func CreateHiddenNeuron() *HiddenNeuron {
 }
 
 func (n *HiddenNeuron) Alive() {
-	fmt.Println("Hidden Neuron Run")
+	//fmt.Println("Hidden Neuron Run")
+	for {
+		value := n.Activation()
+		n.Broadcast(value)
+	}
 }
 
 type OutputNeuron struct {
@@ -94,5 +106,11 @@ func CreateOutputNeuron() *OutputNeuron {
 }
 
 func (n *OutputNeuron) Alive() {
-	fmt.Println("Output Neuron Run")
+	//fmt.Println("Output Neuron Run")
+	for {
+		value := n.Activation()
+		fmt.Println("Output Neuron recieved values")
+		fmt.Println(value)
+	}
+
 }

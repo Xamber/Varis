@@ -27,12 +27,12 @@ func (l *BaseLayer) GetNeuronByIndex(index int) Neuron {
 }
 
 func (l *BaseLayer) RunAllNeurons() {
-	for _, neuron := range(l.GetNeurons()) {
+	for _, neuron := range (l.GetNeurons()) {
 		go neuron.(LiveNeuron).Alive()
 	}
 }
 
-func ConnectLayers(now Layer, next Layer)  {
+func ConnectLayers(now Layer, next Layer) {
 	for i := range now.GetNeurons() {
 		for o := range next.GetNeurons() {
 			CreateSynapse(now.GetNeuronByIndex(i), next.GetNeuronByIndex(o))
