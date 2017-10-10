@@ -10,6 +10,7 @@ type Layer interface {
 	RunAllNeurons()
 }
 
+
 type BaseLayer struct {
 	neurons []Neuron
 }
