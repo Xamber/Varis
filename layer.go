@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-type Layer interface {
+type Layerer interface {
 	GetNeurons() []Neuron
 	GetCountOfNeurons() int
 	GetNeuronByIndex(index int) Neuron
@@ -10,11 +10,11 @@ type Layer interface {
 	RunAllNeurons()
 }
 
-type BaseLayer struct {
+type Layer struct {
 	neurons []Neuron
 }
 
-func ConnectLayers(now Layer, next Layer) {
+func ConnectLayers(now Layerer, next Layerer) {
 	for i := range now.GetNeurons() {
 		for o := range next.GetNeurons() {
 			CreateSynapse(now.GetNeuronByIndex(i), next.GetNeuronByIndex(o))
@@ -22,25 +22,25 @@ func ConnectLayers(now Layer, next Layer) {
 	}
 }
 
-func (l *BaseLayer) GetNeurons() []Neuron {
+func (l *Layer) GetNeurons() []Neuron {
 	return l.neurons
 }
 
-func (l *BaseLayer) GetCountOfNeurons() int {
+func (l *Layer) GetCountOfNeurons() int {
 	return len(l.neurons)
 }
 
-func (l *BaseLayer) GetNeuronByIndex(index int) Neuron {
+func (l *Layer) GetNeuronByIndex(index int) Neuron {
 	return l.neurons[index]
 }
 
-func (l *BaseLayer) RunAllNeurons() {
+func (l *Layer) RunAllNeurons() {
 	for _, neuron := range (l.GetNeurons()) {
 		go neuron.(LiveNeuron).Alive()
 	}
 }
 
-func (l *BaseLayer) PrintInfo() {
+func (l *Layer) PrintInfo() {
 	fmt.Println("Layer:")
 	for index, neuron := range l.GetNeurons() {
 		fmt.Println("    Neuron (", index, "): ", neuron)
@@ -55,44 +55,29 @@ func (l *BaseLayer) PrintInfo() {
 	}
 }
 
-type InputLayer struct {
-	BaseLayer
-}
 
-func CreateInputLayer(neuronsCount int) *InputLayer {
-	layer := InputLayer{}
-
+func CreateInputLayer(neuronsCount int) *Layer {
+	layer := Layer{}
 	for i := 0; i < neuronsCount; i++ {
 		layer.neurons = append(layer.neurons, Neuron(CreateInputNeuron()))
 	}
-
 	return &layer
 }
 
-type HiddenLayer struct {
-	BaseLayer
-}
 
-func CreateHiddenLayer(neuronsCount int) *HiddenLayer {
-	layer := HiddenLayer{}
-
+func CreateHiddenLayer(neuronsCount int) *Layer {
+	layer := Layer{}
 	for i := 0; i <= neuronsCount; i++ {
 		layer.neurons = append(layer.neurons, Neuron(CreateHiddenNeuron()))
 	}
-
 	return &layer
 }
 
-type OutputLayer struct {
-	BaseLayer
-}
 
-func CreateOutputLayer(neuronsCount int) *OutputLayer {
-	layer := OutputLayer{}
-
+func CreateOutputLayer(neuronsCount int) *Layer {
+	layer := Layer{}
 	for i := 0; i < neuronsCount; i++ {
 		layer.neurons = append(layer.neurons, Neuron(CreateOutputNeuron()))
 	}
-
 	return &layer
 }

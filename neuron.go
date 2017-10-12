@@ -2,7 +2,6 @@ package main
 
 import (
 	"math/rand"
-	"fmt"
 )
 
 type Neuron interface {
@@ -116,8 +115,6 @@ func (n *OutputNeuron) GetOutput() chan float64 {
 func (n *OutputNeuron) Alive() {
 	for {
 		value := n.Activation()
-		fmt.Println("Output Neuron recieved values")
-		fmt.Println(value)
 		n.output <- value
 	}
 

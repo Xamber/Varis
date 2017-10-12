@@ -1,9 +1,9 @@
 package main
 
 type Network struct {
-	inputLayer   Layer
-	hiddenLayers []Layer
-	outputLayer  Layer
+	inputLayer   Layerer
+	hiddenLayers []Layerer
+	outputLayer  Layerer
 }
 
 func CreateNetwork(layers ...int) Network {
