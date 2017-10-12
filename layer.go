@@ -10,9 +10,16 @@ type Layer interface {
 	RunAllNeurons()
 }
 
-
 type BaseLayer struct {
 	neurons []Neuron
+}
+
+func ConnectLayers(now Layer, next Layer) {
+	for i := range now.GetNeurons() {
+		for o := range next.GetNeurons() {
+			CreateSynapse(now.GetNeuronByIndex(i), next.GetNeuronByIndex(o))
+		}
+	}
 }
 
 func (l *BaseLayer) GetNeurons() []Neuron {
@@ -30,14 +37,6 @@ func (l *BaseLayer) GetNeuronByIndex(index int) Neuron {
 func (l *BaseLayer) RunAllNeurons() {
 	for _, neuron := range (l.GetNeurons()) {
 		go neuron.(LiveNeuron).Alive()
-	}
-}
-
-func ConnectLayers(now Layer, next Layer) {
-	for i := range now.GetNeurons() {
-		for o := range next.GetNeurons() {
-			CreateSynapse(now.GetNeuronByIndex(i), next.GetNeuronByIndex(o))
-		}
 	}
 }
 
