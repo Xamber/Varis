@@ -39,7 +39,7 @@ func CreateNetwork(layers ...int) Network {
 	return network
 }
 
-func (n Network) Calculate(input []float64) []float64 {
+func (n *Network) Calculate(input []float64) []float64 {
 
 	if len(input) != n.inputLayer.GetCountOfNeurons() {
 		panic("Check count of input value")
@@ -57,7 +57,7 @@ func (n Network) Calculate(input []float64) []float64 {
 	return output
 }
 
-func (n Network) ShowStatistic() {
+func (n *Network) ShowStatistic() {
 
 	n.inputLayer.PrintInfo()
 
