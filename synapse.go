@@ -8,6 +8,7 @@ type Synapse struct {
 	weight float64
 	in     chan float64
 	out    chan float64
+	cache  float64
 }
 
 func CreateSynapse(in Neuron, out Neuron) {
@@ -23,9 +24,14 @@ func CreateSynapse(in Neuron, out Neuron) {
 	go syn.Alive()
 }
 
+func (s *Synapse) ChangeWeight(delta float64) {
+	s.weight += s.cache * delta
+}
+
 func (s *Synapse) Alive() {
 	for {
 		inputValue := <-s.in
+		s.cache = inputValue
 		outputValue := inputValue * s.weight
 		s.out <- outputValue
 	}

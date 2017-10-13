@@ -10,6 +10,20 @@ func main() {
 
 	n := CreateNetwork(2, 2, 1)
 
-	fmt.Println(n.Calculate([]float64{0.0, 0.0}))
-	fmt.Println(n.Calculate([]float64{1.0, 1.0}))
+	fmt.Println(0.0, 0.0, "-", n.Calculate([]float64{0.0, 0.0}))
+	fmt.Println(1.0, 0.0, "-", n.Calculate([]float64{1.0, 0.0}))
+	fmt.Println(0.0, 1.0, "-", n.Calculate([]float64{0.0, 1.0}))
+	fmt.Println(1.0, 1.0, "-", n.Calculate([]float64{1.0, 1.0}))
+
+	repeat(func() {
+		n.Train([]float64{0.0, 0.0}, []float64{1.0})
+		n.Train([]float64{1.0, 0.0}, []float64{0.0})
+		n.Train([]float64{0.0, 1.0}, []float64{0.0})
+		n.Train([]float64{1.0, 1.0}, []float64{1.0})
+	}, 10000)
+
+	fmt.Println(0.0, 0.0, "-", n.Calculate([]float64{0.0, 0.0}))
+	fmt.Println(1.0, 0.0, "-", n.Calculate([]float64{1.0, 0.0}))
+	fmt.Println(0.0, 1.0, "-", n.Calculate([]float64{0.0, 1.0}))
+	fmt.Println(1.0, 1.0, "-", n.Calculate([]float64{1.0, 1.0}))
 }
