@@ -35,7 +35,7 @@ func (l *Layer) GetNeuronByIndex(index int) Neuron {
 }
 
 func (l *Layer) RunAllNeurons() {
-	for _, neuron := range (l.GetNeurons()) {
+	for _, neuron := range l.GetNeurons() {
 		go neuron.(LiveNeuron).Alive()
 	}
 }
@@ -53,31 +53,4 @@ func (l *Layer) PrintInfo() {
 			fmt.Println("        OutSynapse: ", synapse)
 		}
 	}
-}
-
-
-func CreateInputLayer(neuronsCount int) *Layer {
-	layer := Layer{}
-	for i := 0; i < neuronsCount; i++ {
-		layer.neurons = append(layer.neurons, Neuron(CreateInputNeuron()))
-	}
-	return &layer
-}
-
-
-func CreateHiddenLayer(neuronsCount int) *Layer {
-	layer := Layer{}
-	for i := 0; i <= neuronsCount; i++ {
-		layer.neurons = append(layer.neurons, Neuron(CreateHiddenNeuron()))
-	}
-	return &layer
-}
-
-
-func CreateOutputLayer(neuronsCount int) *Layer {
-	layer := Layer{}
-	for i := 0; i < neuronsCount; i++ {
-		layer.neurons = append(layer.neurons, Neuron(CreateOutputNeuron()))
-	}
-	return &layer
 }
