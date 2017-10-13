@@ -10,6 +10,6 @@ func main() {
 
 	n := CreateNetwork(2, 2, 1)
 
-	fmt.Println(n.Calculate([]float64{1.0, 0.0}))
-	fmt.Println(n.Calculate([]float64{0.0, 1.0}))
+	fmt.Println(n.Calculate([]float64{0.0, 0.0}))
+	fmt.Println(n.Calculate([]float64{1.0, 1.0}))
 }
