@@ -30,9 +30,8 @@ func (s *Synapse) ChangeWeight(delta float64) {
 
 func (s *Synapse) Alive() {
 	for {
-		inputValue := <-s.in
-		s.cache = inputValue
-		outputValue := inputValue * s.weight
+		s.cache = <-s.in
+		outputValue := s.cache * s.weight
 		s.out <- outputValue
 	}
 }

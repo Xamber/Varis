@@ -77,14 +77,12 @@ func (n *Network) Train(inputs []float64, expected []float64) {
 	results := n.Calculate(inputs)
 
 	var lastLayerDelta float64
-
 	for i, n := range n.GetOutputLayer().GetNeurons() {
 		delta := expected[i] - results[i]
 		lastLayerDelta += n.Train(delta)
 	}
 
 	for i := len(n.layers) - 2; i > 0; i-- {
-
 		if i == 0 {
 			break
 		}

@@ -6,9 +6,9 @@ import (
 )
 
 func main() {
-	rand.Seed(1338)
+	rand.Seed(1337)
 
-	n := CreateNetwork(2, 2, 1)
+	n := CreateNetwork(2, 4, 1)
 
 	fmt.Println(0.0, 0.0, "-", n.Calculate([]float64{0.0, 0.0}))
 	fmt.Println(1.0, 0.0, "-", n.Calculate([]float64{1.0, 0.0}))
