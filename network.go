@@ -11,9 +11,7 @@ func CreateNetwork(layers ...int) Network {
 	for index, neurons := range layers {
 
 		var layer Layer
-
 		for i := 0; i < neurons; i++ {
-
 			var neuron Neuron
 
 			switch index {
@@ -24,11 +22,8 @@ func CreateNetwork(layers ...int) Network {
 			default:
 				neuron = CreateHiddenNeuron()
 			}
-
 			layer.neurons = append(layer.neurons, Neuron(neuron))
-
 		}
-
 		network.layers = append(network.layers, Layerer(&layer))
 
 	}
@@ -79,13 +74,19 @@ func (n *Network) Train(inputs []float64, expected []float64) {
 
 	for i, n := range n.GetOutputLayer().GetNeurons() {
 		delta := expected[i] - results[i]
-		nowDelta += n.Train(delta)
+
+		neuronDelta := delta * n.Deactivation()
+		nowDelta += neuronDelta
+
+		n.Train(neuronDelta)
 	}
 
 	for i := len(n.layers) - 2; i > 0; i-- {
 		nextDelta := 0.00
 		for _, n := range n.layers[i].GetNeurons() {
-			nextDelta += n.Train(nowDelta)
+			neuronDelta := nowDelta * n.Deactivation()
+			nextDelta += neuronDelta
+			n.Train(neuronDelta)
 		}
 		nowDelta = nextDelta
 	}

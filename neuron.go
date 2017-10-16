@@ -16,7 +16,8 @@ type Neuron interface {
 
 	CollectSignals() []float64
 	Activation() float64
-	Train(delta float64) float64
+	Train(delta float64)
+	Deactivation() float64
 }
 
 type LiveNeuron interface {
@@ -74,13 +75,15 @@ func (n *BaseNeuron) Activation() float64 {
 	return outputSignal
 }
 
-func (n *BaseNeuron) Train(delta float64) float64 {
-	neuronDelta := delta * derivative_sigmoid(n.cache)
+func (n *BaseNeuron) Deactivation() float64 {
+	return derivative_sigmoid(n.cache)
+}
+
+func (n *BaseNeuron) Train(neuronDelta float64) {
 	n.bias += neuronDelta
 	for _, s := range n.inSynapses {
-		s.ChangeWeight(neuronDelta)
+		s.weight += s.cache * neuronDelta
 	}
-	return neuronDelta
 }
 
 type InputNeuron struct {

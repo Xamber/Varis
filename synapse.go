@@ -24,10 +24,6 @@ func CreateSynapse(in Neuron, out Neuron) {
 	go syn.Alive()
 }
 
-func (s *Synapse) ChangeWeight(delta float64) {
-	s.weight += s.cache * delta
-}
-
 func (s *Synapse) Alive() {
 	for {
 		s.cache = <-s.in
