@@ -46,6 +46,34 @@ type BaseNeuron struct {
 	outSynapses []*Synapse
 }
 
+type InputNeuron struct {
+	BaseNeuron
+}
+
+type HiddenNeuron struct {
+	BaseNeuron
+}
+
+type OutputNeuron struct {
+	BaseNeuron
+	output chan float64
+}
+
+func CreateInputNeuron() *InputNeuron {
+	neuron := InputNeuron{BaseNeuron{bias: rand.Float64()}}
+	return &neuron
+}
+
+func CreateHiddenNeuron() *HiddenNeuron {
+	neuron := HiddenNeuron{BaseNeuron{bias: rand.Float64()}}
+	return &neuron
+}
+
+func CreateOutputNeuron() *OutputNeuron {
+	neuron := OutputNeuron{BaseNeuron{bias: rand.Float64()}, make(chan float64)}
+	return &neuron
+}
+
 func (n *BaseNeuron) AddOutputSynapse(syn *Synapse) {
 	n.outSynapses = append(n.outSynapses, syn)
 }
@@ -97,39 +125,10 @@ func (n *BaseNeuron) Train(neuronDelta float64) {
 	}
 }
 
-type InputNeuron struct {
-	BaseNeuron
-}
-
-func CreateInputNeuron() *InputNeuron {
-	neuron := InputNeuron{BaseNeuron{bias: rand.Float64()}}
-	return &neuron
-}
-
-type HiddenNeuron struct {
-	BaseNeuron
-}
-
-func CreateHiddenNeuron() *HiddenNeuron {
-	neuron := HiddenNeuron{BaseNeuron{bias: rand.Float64()}}
-	return &neuron
-}
-
 func (n *HiddenNeuron) Alive() {
 	for {
-		value := n.Activation()
-		n.Broadcast(value)
+		n.Broadcast(n.Activation())
 	}
-}
-
-type OutputNeuron struct {
-	BaseNeuron
-	output chan float64
-}
-
-func CreateOutputNeuron() *OutputNeuron {
-	neuron := OutputNeuron{BaseNeuron{bias: rand.Float64()}, make(chan float64)}
-	return &neuron
 }
 
 func (n *OutputNeuron) GetOutput() chan float64 {
@@ -138,7 +137,6 @@ func (n *OutputNeuron) GetOutput() chan float64 {
 
 func (n *OutputNeuron) Alive() {
 	for {
-		value := n.Activation()
-		n.output <- value
+		n.output <- n.Activation()
 	}
 }
