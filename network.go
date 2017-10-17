@@ -60,7 +60,7 @@ func (n *Network) RunAllNeuron() {
 	}
 }
 
-func (n *Network) Calculate(input []float64) []float64 {
+func (n *Network) Calculate(input ...float64) []float64 {
 
 	if len(input) != n.GetInputLayer().GetCountOfNeurons() {
 		panic("Check count of input value")
@@ -82,7 +82,7 @@ func (n *Network) Calculate(input []float64) []float64 {
 
 func (n *Network) Train(inputs []float64, expected []float64) {
 
-	results := n.Calculate(inputs)
+	results := n.Calculate(inputs...)
 
 	layerDelta := 0.0
 
