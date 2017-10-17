@@ -65,6 +65,7 @@ func (n *Network) Calculate(input ...float64) []float64 {
 	}
 
 	output := make([]float64, n.GetOutputLayer().GetCountOfNeurons())
+
 	for i := range output {
 		outputNeuron := n.GetOutputLayer().GetNeuronByIndex(i)
 		redirectable := outputNeuron.(Redirectable)
@@ -72,33 +73,6 @@ func (n *Network) Calculate(input ...float64) []float64 {
 	}
 
 	return output
-}
-
-func (n *Network) Train(inputs []float64, expected []float64) {
-
-	results := n.Calculate(inputs...)
-
-	layerDelta := 0.0
-
-	for neuronIndex, n := range n.GetOutputLayer().GetNeurons() {
-		delta := expected[neuronIndex] - results[neuronIndex]
-
-		neuronDelta := delta * n.Deactivation()
-		layerDelta += neuronDelta
-
-		n.Train(neuronDelta)
-	}
-
-	for layerIndex := len(n.layers) - 2; layerIndex > 0; layerIndex-- {
-		nextDelta := 0.00
-		for _, n := range n.layers[layerIndex].GetNeurons() {
-			neuronDelta := layerDelta * n.Deactivation()
-			nextDelta += neuronDelta
-			n.Train(neuronDelta)
-		}
-		layerDelta = nextDelta
-	}
-
 }
 
 func (n *Network) ShowStatistic() {

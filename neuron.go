@@ -117,10 +117,7 @@ func (n *CoreNeuron) Train(neuronDelta float64) {
 }
 
 func (n *CoreNeuron) Alive() {
-	panic("Not Implimented")
-}
-
-func (n *InputNeuron) Alive() {
+	// Empty
 }
 
 func (n *HiddenNeuron) Alive() {

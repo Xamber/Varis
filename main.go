@@ -15,12 +15,14 @@ func main() {
 	fmt.Println(0.0, 1.0, "-", n.Calculate(0.0, 1.0))
 	fmt.Println(1.0, 1.0, "-", n.Calculate(1.0, 1.0))
 
-	repeat(func() {
-		n.Train([]float64{0.0, 0.0}, []float64{1.0})
-		n.Train([]float64{1.0, 0.0}, []float64{0.0})
-		n.Train([]float64{0.0, 1.0}, []float64{0.0})
-		n.Train([]float64{1.0, 1.0}, []float64{1.0})
-	}, 10000)
+	dataset := Dataset{
+		Frame{[]float64{0.0, 0.0}, []float64{1.0}},
+		Frame{[]float64{1.0, 0.0}, []float64{0.0}},
+		Frame{[]float64{0.0, 1.0}, []float64{0.0}},
+		Frame{[]float64{1.0, 1.0}, []float64{1.0}},
+	}
+
+	TrainByDataset(&n, BackPropagation, dataset, 10000)
 
 	fmt.Println("After training")
 	fmt.Println(0.0, 0.0, "-", n.Calculate(0.0, 0.0))
