@@ -13,8 +13,10 @@ type Neuron interface {
 	Handle(value float64)
 	Broadcast(value float64)
 	CollectSignals() []float64
+
 	Activation() float64
 	Deactivation() float64
+
 	Train(delta float64)
 
 	Alive()
@@ -24,7 +26,7 @@ type Redirectable interface {
 	GetOutput() chan float64
 }
 
-type BaseNeuron struct {
+type CoreNeuron struct {
 	bias        float64
 	cache       float64
 	inSynapses  []*Synapse
@@ -32,64 +34,64 @@ type BaseNeuron struct {
 }
 
 type InputNeuron struct {
-	BaseNeuron
+	CoreNeuron
 }
 
 type HiddenNeuron struct {
-	BaseNeuron
+	CoreNeuron
 }
 
 type OutputNeuron struct {
-	BaseNeuron
+	CoreNeuron
 	output chan float64
 }
 
-func CreateBaseNeuron() BaseNeuron {
-	return BaseNeuron{bias: rand.Float64()}
+func CreateCoreNeuron() CoreNeuron {
+	return CoreNeuron{bias: rand.Float64()}
 }
 
 func CreateInputNeuron() *InputNeuron {
-	neuron := InputNeuron{CreateBaseNeuron()}
+	neuron := InputNeuron{CreateCoreNeuron()}
 	return &neuron
 }
 
 func CreateHiddenNeuron() *HiddenNeuron {
-	neuron := HiddenNeuron{CreateBaseNeuron()}
+	neuron := HiddenNeuron{CreateCoreNeuron()}
 	return &neuron
 }
 
 func CreateOutputNeuron() *OutputNeuron {
-	neuron := OutputNeuron{CreateBaseNeuron(), make(chan float64)}
+	neuron := OutputNeuron{CreateCoreNeuron(), make(chan float64)}
 	return &neuron
 }
 
-func (n *BaseNeuron) AddOutputSynapse(syn *Synapse) {
+func (n *CoreNeuron) AddOutputSynapse(syn *Synapse) {
 	n.outSynapses = append(n.outSynapses, syn)
 }
 
-func (n *BaseNeuron) AddInputSynapse(syn *Synapse) {
+func (n *CoreNeuron) AddInputSynapse(syn *Synapse) {
 	n.inSynapses = append(n.inSynapses, syn)
 }
 
-func (n *BaseNeuron) GetOutputSynapses() []*Synapse {
+func (n *CoreNeuron) GetOutputSynapses() []*Synapse {
 	return n.outSynapses
 }
 
-func (n *BaseNeuron) GetInputSynapses() []*Synapse {
+func (n *CoreNeuron) GetInputSynapses() []*Synapse {
 	return n.inSynapses
 }
 
-func (n *BaseNeuron) Handle(value float64) {
+func (n *CoreNeuron) Handle(value float64) {
 	n.Broadcast(value)
 }
 
-func (n *BaseNeuron) Broadcast(value float64) {
+func (n *CoreNeuron) Broadcast(value float64) {
 	for o := range n.outSynapses {
 		n.outSynapses[o].in <- value
 	}
 }
 
-func (n *BaseNeuron) CollectSignals() []float64 {
+func (n *CoreNeuron) CollectSignals() []float64 {
 	inputSignals := make([]float64, len(n.inSynapses))
 	for i := range inputSignals {
 		inputSignals[i] = <-n.inSynapses[i].out
@@ -97,24 +99,24 @@ func (n *BaseNeuron) CollectSignals() []float64 {
 	return inputSignals
 }
 
-func (n *BaseNeuron) Activation() float64 {
+func (n *CoreNeuron) Activation() float64 {
 	n.cache = sum(n.CollectSignals()) + n.bias
 	outputSignal := activation_sigmoid(n.cache)
 	return outputSignal
 }
 
-func (n *BaseNeuron) Deactivation() float64 {
+func (n *CoreNeuron) Deactivation() float64 {
 	return derivative_sigmoid(n.cache)
 }
 
-func (n *BaseNeuron) Train(neuronDelta float64) {
+func (n *CoreNeuron) Train(neuronDelta float64) {
 	n.bias += neuronDelta
 	for _, s := range n.inSynapses {
 		s.weight += s.cache * neuronDelta
 	}
 }
 
-func (n *BaseNeuron) Alive() {
+func (n *CoreNeuron) Alive() {
 	panic("Not Implimented")
 }
 
