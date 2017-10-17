@@ -70,26 +70,28 @@ func (n *Network) Calculate(input []float64) []float64 {
 func (n *Network) Train(inputs []float64, expected []float64) {
 
 	results := n.Calculate(inputs)
-	nowDelta := 0.0
 
-	for i, n := range n.GetOutputLayer().GetNeurons() {
-		delta := expected[i] - results[i]
+	layerDelta := 0.0
+
+	for neuronIndex, n := range n.GetOutputLayer().GetNeurons() {
+		delta := expected[neuronIndex] - results[neuronIndex]
 
 		neuronDelta := delta * n.Deactivation()
-		nowDelta += neuronDelta
+		layerDelta += neuronDelta
 
 		n.Train(neuronDelta)
 	}
 
-	for i := len(n.layers) - 2; i > 0; i-- {
+	for layerIndex := len(n.layers) - 2; layerIndex > 0; layerIndex-- {
 		nextDelta := 0.00
-		for _, n := range n.layers[i].GetNeurons() {
-			neuronDelta := nowDelta * n.Deactivation()
+		for _, n := range n.layers[layerIndex].GetNeurons() {
+			neuronDelta := layerDelta * n.Deactivation()
 			nextDelta += neuronDelta
 			n.Train(neuronDelta)
 		}
-		nowDelta = nextDelta
+		layerDelta = nextDelta
 	}
+
 }
 
 func (n *Network) ShowStatistic() {
