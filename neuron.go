@@ -4,7 +4,7 @@ import (
 	"math/rand"
 )
 
-type Neuron interface {
+type HaveSypapses interface {
 	AddOutputSynapse(syn *Synapse)
 	AddInputSynapse(syn *Synapse)
 
@@ -13,10 +13,15 @@ type Neuron interface {
 
 	Handle(value float64)
 	Broadcast(value float64)
+}
 
+type Trainable interface {
+	Train(delta float64)
+}
+
+type Workable interface {
 	CollectSignals() []float64
 	Activation() float64
-	Train(delta float64)
 	Deactivation() float64
 }
 
@@ -24,8 +29,14 @@ type LiveNeuron interface {
 	Alive()
 }
 
-type RedirectNeuron interface {
+type Redirectable interface {
 	GetOutput() chan float64
+}
+
+type Neuron interface {
+	Workable
+	HaveSypapses
+	Trainable
 }
 
 type BaseNeuron struct {

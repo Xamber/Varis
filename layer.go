@@ -7,7 +7,6 @@ type Layerer interface {
 	GetCountOfNeurons() int
 	GetNeuronByIndex(index int) Neuron
 	PrintInfo()
-	RunAllNeurons()
 }
 
 type Layer struct {
@@ -32,12 +31,6 @@ func (l *Layer) GetCountOfNeurons() int {
 
 func (l *Layer) GetNeuronByIndex(index int) Neuron {
 	return l.neurons[index]
-}
-
-func (l *Layer) RunAllNeurons() {
-	for _, neuron := range l.GetNeurons() {
-		go neuron.(LiveNeuron).Alive()
-	}
 }
 
 func (l *Layer) PrintInfo() {

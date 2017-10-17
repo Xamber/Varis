@@ -4,6 +4,8 @@ type Network struct {
 	layers []Layerer
 }
 
+type NeuronFunc func(neuron Neuron)
+
 func CreateNetwork(layers ...int) Network {
 
 	var network Network
@@ -34,9 +36,7 @@ func CreateNetwork(layers ...int) Network {
 		ConnectLayers(now, next)
 	}
 
-	for l := 1; l < len(network.layers); l++ {
-		network.layers[l].RunAllNeurons()
-	}
+	network.RunAllNeuron()
 
 	return network
 }
@@ -47,6 +47,17 @@ func (n *Network) GetInputLayer() Layerer {
 
 func (n *Network) GetOutputLayer() Layerer {
 	return n.layers[len(n.layers)-1]
+}
+
+func (n *Network) RunAllNeuron() {
+	for _, l := range n.layers {
+		for _, neuron := range l.GetNeurons() {
+			liveNeuron, ok := neuron.(LiveNeuron)
+			if ok {
+				go liveNeuron.Alive()
+			}
+		}
+	}
 }
 
 func (n *Network) Calculate(input []float64) []float64 {
@@ -61,7 +72,9 @@ func (n *Network) Calculate(input []float64) []float64 {
 
 	output := make([]float64, n.GetOutputLayer().GetCountOfNeurons())
 	for i := range output {
-		output[i] = <-n.GetOutputLayer().GetNeuronByIndex(i).(RedirectNeuron).GetOutput()
+		outputNeuron := n.GetOutputLayer().GetNeuronByIndex(i)
+		redirectable := outputNeuron.(Redirectable)
+		output[i] = <-redirectable.GetOutput()
 	}
 
 	return output
