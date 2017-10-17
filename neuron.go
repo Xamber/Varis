@@ -4,42 +4,24 @@ import (
 	"math/rand"
 )
 
-type HaveInput interface {
+type Neuron interface {
 	AddInputSynapse(syn *Synapse)
 	GetInputSynapses() []*Synapse
-}
-
-type HaveOutput interface {
 	AddOutputSynapse(syn *Synapse)
 	GetOutputSynapses() []*Synapse
 
 	Handle(value float64)
 	Broadcast(value float64)
-}
-
-type Trainable interface {
-	Train(delta float64)
-}
-
-type Workable interface {
 	CollectSignals() []float64
 	Activation() float64
 	Deactivation() float64
-}
+	Train(delta float64)
 
-type LiveNeuron interface {
 	Alive()
 }
 
 type Redirectable interface {
 	GetOutput() chan float64
-}
-
-type Neuron interface {
-	HaveInput
-	HaveOutput
-	Workable
-	Trainable
 }
 
 type BaseNeuron struct {
@@ -132,18 +114,25 @@ func (n *BaseNeuron) Train(neuronDelta float64) {
 	}
 }
 
+func (n *BaseNeuron) Alive() {
+	panic("Not Implimented")
+}
+
+func (n *InputNeuron) Alive() {
+}
+
 func (n *HiddenNeuron) Alive() {
 	for {
 		n.Broadcast(n.Activation())
 	}
 }
 
-func (n *OutputNeuron) GetOutput() chan float64 {
-	return n.output
-}
-
 func (n *OutputNeuron) Alive() {
 	for {
 		n.output <- n.Activation()
 	}
+}
+
+func (n *OutputNeuron) GetOutput() chan float64 {
+	return n.output
 }

@@ -11,7 +11,7 @@ type Synapse struct {
 	cache  float64
 }
 
-func CreateSynapse(in HaveOutput, out HaveInput) {
+func CreateSynapse(in Neuron, out Neuron) {
 	syn := &Synapse{
 		weight: rand.Float64(),
 		in:     make(chan float64),

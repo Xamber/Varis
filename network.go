@@ -4,14 +4,11 @@ type Network struct {
 	layers []Layerer
 }
 
-type NeuronFunc func(neuron Neuron)
-
 func CreateNetwork(layers ...int) Network {
 
 	var network Network
 
 	for index, neurons := range layers {
-
 		var layer Layer
 
 		for i := 0; i < neurons; i++ {
@@ -28,7 +25,6 @@ func CreateNetwork(layers ...int) Network {
 			layer.neurons = append(layer.neurons, Neuron(neuron))
 		}
 		network.layers = append(network.layers, Layerer(&layer))
-
 	}
 
 	for l := 0; l < len(network.layers)-1; l++ {
@@ -53,10 +49,7 @@ func (n *Network) GetOutputLayer() Layerer {
 func (n *Network) RunAllNeuron() {
 	for _, l := range n.layers {
 		for _, neuron := range l.GetNeurons() {
-			liveNeuron, ok := neuron.(LiveNeuron)
-			if ok {
-				go liveNeuron.Alive()
-			}
+			go neuron.Alive()
 		}
 	}
 }
