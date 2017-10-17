@@ -13,6 +13,7 @@ func CreateNetwork(layers ...int) Network {
 	for index, neurons := range layers {
 
 		var layer Layer
+
 		for i := 0; i < neurons; i++ {
 			var neuron Neuron
 

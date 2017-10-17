@@ -4,12 +4,14 @@ import (
 	"math/rand"
 )
 
-type HaveSypapses interface {
-	AddOutputSynapse(syn *Synapse)
+type HaveInput interface {
 	AddInputSynapse(syn *Synapse)
-
-	GetOutputSynapses() []*Synapse
 	GetInputSynapses() []*Synapse
+}
+
+type HaveOutput interface {
+	AddOutputSynapse(syn *Synapse)
+	GetOutputSynapses() []*Synapse
 
 	Handle(value float64)
 	Broadcast(value float64)
@@ -34,8 +36,9 @@ type Redirectable interface {
 }
 
 type Neuron interface {
+	HaveInput
+	HaveOutput
 	Workable
-	HaveSypapses
 	Trainable
 }
 
@@ -59,18 +62,22 @@ type OutputNeuron struct {
 	output chan float64
 }
 
+func CreateBaseNeuron() BaseNeuron {
+	return BaseNeuron{bias: rand.Float64()}
+}
+
 func CreateInputNeuron() *InputNeuron {
-	neuron := InputNeuron{BaseNeuron{bias: rand.Float64()}}
+	neuron := InputNeuron{CreateBaseNeuron()}
 	return &neuron
 }
 
 func CreateHiddenNeuron() *HiddenNeuron {
-	neuron := HiddenNeuron{BaseNeuron{bias: rand.Float64()}}
+	neuron := HiddenNeuron{CreateBaseNeuron()}
 	return &neuron
 }
 
 func CreateOutputNeuron() *OutputNeuron {
-	neuron := OutputNeuron{BaseNeuron{bias: rand.Float64()}, make(chan float64)}
+	neuron := OutputNeuron{CreateBaseNeuron(), make(chan float64)}
 	return &neuron
 }
 

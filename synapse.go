@@ -11,7 +11,7 @@ type Synapse struct {
 	cache  float64
 }
 
-func CreateSynapse(in Neuron, out Neuron) {
+func CreateSynapse(in HaveOutput, out HaveInput) {
 	syn := &Synapse{
 		weight: rand.Float64(),
 		in:     make(chan float64),
@@ -21,13 +21,11 @@ func CreateSynapse(in Neuron, out Neuron) {
 	in.AddOutputSynapse(syn)
 	out.AddInputSynapse(syn)
 
-	go syn.Alive()
-}
-
-func (s *Synapse) Alive() {
-	for {
-		s.cache = <-s.in
-		outputValue := s.cache * s.weight
-		s.out <- outputValue
-	}
+	go func() {
+		for {
+			syn.cache = <-syn.in
+			outputValue := syn.cache * syn.weight
+			syn.out <- outputValue
+		}
+	}()
 }
