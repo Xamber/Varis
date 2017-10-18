@@ -6,8 +6,9 @@ import (
 
 type Neuron interface {
 	AddInputSynapse(syn *Synapse)
-	GetInputSynapses() []*Synapse
 	AddOutputSynapse(syn *Synapse)
+
+	GetInputSynapses() []*Synapse
 	GetOutputSynapses() []*Synapse
 
 	Handle(value float64)

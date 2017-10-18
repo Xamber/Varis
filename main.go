@@ -9,6 +9,7 @@ func main() {
 	rand.Seed(1338)
 
 	n := CreateNetwork(2, 2, 1)
+
 	fmt.Println("Before training")
 	fmt.Println(0.0, 0.0, "-", n.Calculate(0.0, 0.0))
 	fmt.Println(1.0, 0.0, "-", n.Calculate(1.0, 0.0))
@@ -22,7 +23,8 @@ func main() {
 		Frame{[]float64{1.0, 1.0}, []float64{1.0}},
 	}
 
-	TrainByDataset(&n, BackPropagation, dataset, 10000)
+	trainer := Trainer{&n, BackPropagation}
+	trainer.TrainByDataset(dataset, 10000)
 
 	fmt.Println("After training")
 	fmt.Println(0.0, 0.0, "-", n.Calculate(0.0, 0.0))

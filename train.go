@@ -7,14 +7,22 @@ type Frame struct {
 
 type Dataset []Frame
 
-type TrainFunction func(network *Network, inputs []float64, expected []float64, speed int)
+type Trainer struct {
+	network   *Network
+	trainFunc func(*Network, []float64, []float64, int)
+}
 
-func TrainByDataset(network *Network, trainFunc TrainFunction, dataset Dataset, times int) {
-	repeat(func() {
+func (t *Trainer) setTrainFunc(newTrainFunction func(*Network, []float64, []float64, int)) {
+	t.trainFunc = newTrainFunction
+}
+
+func (t *Trainer) TrainByDataset(dataset Dataset, times int) {
+	for times > 0 {
 		for _, f := range dataset {
-			trainFunc(network, f.inputs, f.expected, 1)
+			t.trainFunc(t.network, f.inputs, f.expected, 1)
 		}
-	}, times)
+		times--
+	}
 }
 
 func BackPropagation(network *Network, inputs []float64, expected []float64, speed int) {
@@ -24,22 +32,19 @@ func BackPropagation(network *Network, inputs []float64, expected []float64, spe
 	layerDelta := 0.0
 
 	for neuronIndex, n := range network.GetOutputLayer().GetNeurons() {
-		delta := expected[neuronIndex] - results[neuronIndex]
-
-		neuronDelta := delta * n.Deactivation()
+		neuronDelta := (expected[neuronIndex] - results[neuronIndex]) * n.Deactivation() * float64(speed)
 		layerDelta += neuronDelta
-
 		n.Train(neuronDelta)
 	}
 
 	for layerIndex := len(network.layers) - 2; layerIndex > 0; layerIndex-- {
-		nextDelta := 0.00
+		nextLayerDelta := 0.00
 		for _, n := range network.layers[layerIndex].GetNeurons() {
 			neuronDelta := layerDelta * n.Deactivation()
-			nextDelta += neuronDelta
+			nextLayerDelta += neuronDelta
 			n.Train(neuronDelta)
 		}
-		layerDelta = nextDelta
+		layerDelta = nextLayerDelta
 	}
 
 }
