@@ -61,8 +61,8 @@ func CreateHiddenNeuron() *HiddenNeuron {
 	return &neuron
 }
 
-func CreateOutputNeuron() *OutputNeuron {
-	neuron := OutputNeuron{CreateCoreNeuron(), make(chan float64)}
+func CreateOutputNeuron(outputChan chan float64) *OutputNeuron {
+	neuron := OutputNeuron{CreateCoreNeuron(), outputChan}
 	return &neuron
 }
 
@@ -131,8 +131,4 @@ func (n *OutputNeuron) Alive() {
 	for {
 		n.output <- n.Activation()
 	}
-}
-
-func (n *OutputNeuron) GetOutput() chan float64 {
-	return n.output
 }

@@ -2,29 +2,38 @@ package main
 
 type Network struct {
 	layers []Layerer
+	output []chan float64
 }
 
 func CreateNetwork(layers ...int) Network {
 
-	var network Network
+	network := Network{output: make([]chan float64, 0)}
+
+	inputLayerIndex := 0
+	outputLayerIndex := len(layers) - 1
 
 	for index, neurons := range layers {
-		var layer Layer
+
+		layer := CreateLayer()
 
 		for i := 0; i < neurons; i++ {
 			var neuron Neuron
 
 			switch index {
-			case 0:
+			case inputLayerIndex:
 				neuron = CreateInputNeuron()
-			case len(layers) - 1:
-				neuron = CreateOutputNeuron()
+			case outputLayerIndex:
+				outputChan := make(chan float64)
+				neuron = CreateOutputNeuron(outputChan)
+				network.output = append(network.output, outputChan)
 			default:
 				neuron = CreateHiddenNeuron()
 			}
-			layer.neurons = append(layer.neurons, Neuron(neuron))
+
+			layer.AddNeuron(neuron)
+
 		}
-		network.layers = append(network.layers, Layerer(&layer))
+		network.AddLayer(layer)
 	}
 
 	for l := 0; l < len(network.layers)-1; l++ {
@@ -36,6 +45,10 @@ func CreateNetwork(layers ...int) Network {
 	network.RunAllNeuron()
 
 	return network
+}
+
+func (n *Network) AddLayer(layer Layerer) {
+	n.layers = append(n.layers, Layerer(layer))
 }
 
 func (n *Network) GetInputLayer() Layerer {
@@ -64,12 +77,10 @@ func (n *Network) Calculate(input ...float64) []float64 {
 		n.Handle(input[i])
 	}
 
-	output := make([]float64, n.GetOutputLayer().GetCountOfNeurons())
+	output := make([]float64, len(n.output))
 
 	for i := range output {
-		outputNeuron := n.GetOutputLayer().GetNeuronByIndex(i)
-		redirectable := outputNeuron.(Redirectable)
-		output[i] = <-redirectable.GetOutput()
+		output[i] = <-n.output[i]
 	}
 
 	return output

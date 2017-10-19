@@ -13,12 +13,20 @@ type Layer struct {
 	neurons []Neuron
 }
 
+func CreateLayer() *Layer {
+	return &Layer{}
+}
+
 func ConnectLayers(now Layerer, next Layerer) {
 	for i := range now.GetNeurons() {
 		for o := range next.GetNeurons() {
 			CreateSynapse(now.GetNeuronByIndex(i), next.GetNeuronByIndex(o))
 		}
 	}
+}
+
+func (l *Layer) AddNeuron(neuron Neuron) {
+	l.neurons = append(l.neurons, neuron)
 }
 
 func (l *Layer) GetNeurons() []Neuron {
