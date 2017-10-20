@@ -1,4 +1,13 @@
-package main
+package varis
+
+import (
+	"math/rand"
+	"time"
+)
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 type Network struct {
 	layers []Layerer

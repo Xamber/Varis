@@ -1,25 +1,25 @@
-package main
+package varis
 
 type Frame struct {
-	inputs   []float64
-	expected []float64
+	Inputs   []float64
+	Expected []float64
 }
 
 type Dataset []Frame
 
 type Trainer struct {
-	network   *Network
-	trainFunc func(*Network, []float64, []float64, int)
+	Network   *Network
+	TrainFunc func(*Network, []float64, []float64, int)
 }
 
-func (t *Trainer) setTrainFunc(newTrainFunction func(*Network, []float64, []float64, int)) {
-	t.trainFunc = newTrainFunction
+func (t *Trainer) SetTrainFunc(newTrainFunction func(*Network, []float64, []float64, int)) {
+	t.TrainFunc = newTrainFunction
 }
 
 func (t *Trainer) TrainByDataset(dataset Dataset, times int) {
 	for times > 0 {
 		for _, f := range dataset {
-			t.trainFunc(t.network, f.inputs, f.expected, 1)
+			t.TrainFunc(t.Network, f.Inputs, f.Expected, 1)
 		}
 		times--
 	}
