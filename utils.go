@@ -1,6 +1,10 @@
 package varis
 
-import "math"
+import (
+	"fmt"
+	"math"
+	"os"
+)
 
 // activation function (sigmoid)
 func activation_sigmoid(x float64) float64 {
@@ -20,4 +24,10 @@ func sum(data []float64) float64 {
 		result += i
 	}
 	return result
+}
+
+func debug(format string, a ...interface{}) {
+	if DEBUG == true {
+		fmt.Fprintf(os.Stdout, format, a...)
+	}
 }

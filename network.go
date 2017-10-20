@@ -9,6 +9,8 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
+var DEBUG bool = false
+
 type Network struct {
 	Layers []Layerer
 	Output []chan float64
