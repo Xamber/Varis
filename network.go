@@ -10,13 +10,13 @@ func init() {
 }
 
 type Network struct {
-	layers []Layerer
-	output []chan float64
+	Layers []Layerer
+	Output []chan float64
 }
 
 func CreateNetwork(layers ...int) Network {
 
-	network := Network{output: make([]chan float64, 0)}
+	network := Network{Output: make([]chan float64, 0)}
 
 	inputLayerIndex := 0
 	outputLayerIndex := len(layers) - 1
@@ -30,73 +30,73 @@ func CreateNetwork(layers ...int) Network {
 
 			switch index {
 			case inputLayerIndex:
-				neuron = CreateInputNeuron()
+				neuron = createInputNeuron()
 			case outputLayerIndex:
 				outputChan := make(chan float64)
-				neuron = CreateOutputNeuron(outputChan)
-				network.output = append(network.output, outputChan)
+				neuron = createOutputNeuron(outputChan)
+				network.Output = append(network.Output, outputChan)
 			default:
-				neuron = CreateHiddenNeuron()
+				neuron = createHiddenNeuron()
 			}
 
-			layer.AddNeuron(neuron)
+			layer.addNeuron(neuron)
 
 		}
-		network.AddLayer(layer)
+		network.addLayer(layer)
 	}
 
-	for l := 0; l < len(network.layers)-1; l++ {
-		now := network.layers[l]
-		next := network.layers[l+1]
+	for l := 0; l < len(network.Layers)-1; l++ {
+		now := network.Layers[l]
+		next := network.Layers[l+1]
 		ConnectLayers(now, next)
 	}
 
-	network.RunAllNeuron()
+	network.runAllNeuron()
 
 	return network
 }
 
-func (n *Network) AddLayer(layer Layerer) {
-	n.layers = append(n.layers, Layerer(layer))
+func (n *Network) addLayer(layer Layerer) {
+	n.Layers = append(n.Layers, Layerer(layer))
 }
 
-func (n *Network) GetInputLayer() Layerer {
-	return n.layers[0]
+func (n *Network) getInputLayer() Layerer {
+	return n.Layers[0]
 }
 
-func (n *Network) GetOutputLayer() Layerer {
-	return n.layers[len(n.layers)-1]
+func (n *Network) getOutputLayer() Layerer {
+	return n.Layers[len(n.Layers)-1]
 }
 
-func (n *Network) RunAllNeuron() {
-	for _, l := range n.layers {
-		for _, neuron := range l.GetNeurons() {
-			go neuron.Alive()
+func (n *Network) runAllNeuron() {
+	for _, l := range n.Layers {
+		for _, neuron := range l.getNeurons() {
+			go neuron.alive()
 		}
 	}
 }
 
 func (n *Network) Calculate(input ...float64) []float64 {
 
-	if len(input) != n.GetInputLayer().GetCountOfNeurons() {
+	if len(input) != n.getInputLayer().getCountOfNeurons() {
 		panic("Check count of input value")
 	}
 
-	for i, n := range n.GetInputLayer().GetNeurons() {
-		n.Handle(input[i])
+	for i, n := range n.getInputLayer().getNeurons() {
+		n.handle(input[i])
 	}
 
-	output := make([]float64, len(n.output))
+	output := make([]float64, len(n.Output))
 
 	for i := range output {
-		output[i] = <-n.output[i]
+		output[i] = <-n.Output[i]
 	}
 
 	return output
 }
 
 func (n *Network) ShowStatistic() {
-	for _, layer := range n.layers {
-		layer.PrintInfo()
+	for _, layer := range n.Layers {
+		layer.printInfo()
 	}
 }

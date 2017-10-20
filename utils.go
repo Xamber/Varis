@@ -2,7 +2,7 @@ package varis
 
 import "math"
 
-// Activation function (sigmoid)
+// activation function (sigmoid)
 func activation_sigmoid(x float64) float64 {
 	return 1 / (1 + math.Exp(-x))
 }

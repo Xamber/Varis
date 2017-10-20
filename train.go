@@ -31,18 +31,18 @@ func BackPropagation(network *Network, inputs []float64, expected []float64, spe
 
 	layerDelta := 0.0
 
-	for neuronIndex, n := range network.GetOutputLayer().GetNeurons() {
-		neuronDelta := (expected[neuronIndex] - results[neuronIndex]) * n.Deactivation() * float64(speed)
+	for neuronIndex, n := range network.getOutputLayer().getNeurons() {
+		neuronDelta := (expected[neuronIndex] - results[neuronIndex]) * n.deactivation() * float64(speed)
 		layerDelta += neuronDelta
-		n.Train(neuronDelta)
+		n.train(neuronDelta)
 	}
 
-	for layerIndex := len(network.layers) - 2; layerIndex > 0; layerIndex-- {
+	for layerIndex := len(network.Layers) - 2; layerIndex > 0; layerIndex-- {
 		nextLayerDelta := 0.00
-		for _, n := range network.layers[layerIndex].GetNeurons() {
-			neuronDelta := layerDelta * n.Deactivation()
+		for _, n := range network.Layers[layerIndex].getNeurons() {
+			neuronDelta := layerDelta * n.deactivation()
 			nextLayerDelta += neuronDelta
-			n.Train(neuronDelta)
+			n.train(neuronDelta)
 		}
 		layerDelta = nextLayerDelta
 	}

@@ -4,22 +4,22 @@ import (
 	"math/rand"
 )
 
-type Synapse struct {
+type synapse struct {
 	weight float64
 	in     chan float64
 	out    chan float64
 	cache  float64
 }
 
-func CreateSynapse(in Neuron, out Neuron) {
-	syn := &Synapse{
+func createSynapse(in Neuron, out Neuron) {
+	syn := &synapse{
 		weight: rand.Float64(),
 		in:     make(chan float64),
 		out:    make(chan float64),
 	}
 
-	in.AddOutputSynapse(syn)
-	out.AddInputSynapse(syn)
+	in.addOutputSynapse(syn)
+	out.addInputSynapse(syn)
 
 	go func() {
 		for {
