@@ -96,9 +96,3 @@ func (n *Network) Calculate(input ...float64) []float64 {
 
 	return output
 }
-
-func (n *Network) ShowStatistic() {
-	for _, layer := range n.Layers {
-		layer.printInfo()
-	}
-}

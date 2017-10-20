@@ -13,7 +13,6 @@ type Neuron interface {
 
 	handle(value float64)
 	broadcast(value float64)
-	collectSignals() []float64
 
 	activation() float64
 	deactivation() float64

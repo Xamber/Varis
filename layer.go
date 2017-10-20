@@ -1,12 +1,9 @@
 package varis
 
-import "fmt"
-
 type Layerer interface {
 	getNeurons() []Neuron
 	getCountOfNeurons() int
 	getNeuronByIndex(index int) Neuron
-	printInfo()
 }
 
 type layer struct {
@@ -39,19 +36,4 @@ func (l *layer) getCountOfNeurons() int {
 
 func (l *layer) getNeuronByIndex(index int) Neuron {
 	return l.neurons[index]
-}
-
-func (l *layer) printInfo() {
-	fmt.Println("Layer:")
-	for index, neuron := range l.getNeurons() {
-		fmt.Println("    Neuron (", index, "): ", neuron)
-
-		for _, synapse := range neuron.getInputSynapses() {
-			fmt.Println("        InSynapse: ", synapse)
-		}
-
-		for _, synapse := range neuron.getOutputSynapses() {
-			fmt.Println("        OutSynapse: ", synapse)
-		}
-	}
 }
