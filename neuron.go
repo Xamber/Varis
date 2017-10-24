@@ -68,6 +68,14 @@ func (n *coreNeuron) getConnection() *connection {
 	return &n.conn
 }
 
+func (n *coreNeuron) getInput() chan float64 {
+	return n.input
+}
+
+func (n *coreNeuron) getOutput() chan float64 {
+	return n.output
+}
+
 func (n *coreNeuron) handle(value float64) {
 	n.broadcast(value)
 }
