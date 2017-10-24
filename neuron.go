@@ -7,7 +7,6 @@ import (
 type Neuron interface {
 	getConnection() *connection
 
-	handle(value float64)
 	broadcast(value float64)
 
 	activation() float64
@@ -18,14 +17,8 @@ type Neuron interface {
 	alive()
 }
 
-type Redirectable interface {
-	GetOutput() chan float64
-}
 
 type coreNeuron struct {
-	input  chan float64
-	output chan float64
-
 	conn connection
 
 	bias  float64
@@ -45,39 +38,23 @@ type outputNeuron struct {
 	output chan float64
 }
 
-func createCoreNeuron() coreNeuron {
-	return coreNeuron{bias: rand.Float64(), input: make(chan float64), output: make(chan float64)}
-}
-
 func createInputNeuron() *inputNeuron {
-	neuron := inputNeuron{createCoreNeuron()}
+	neuron := inputNeuron{coreNeuron{bias: rand.Float64()}}
 	return &neuron
 }
 
 func createHiddenNeuron() *hiddenNeuron {
-	neuron := hiddenNeuron{createCoreNeuron()}
+	neuron := hiddenNeuron{coreNeuron{bias: rand.Float64()}}
 	return &neuron
 }
 
 func createOutputNeuron(outputChan chan float64) *outputNeuron {
-	neuron := outputNeuron{createCoreNeuron(), outputChan}
+	neuron := outputNeuron{coreNeuron{bias: rand.Float64()}, outputChan}
 	return &neuron
 }
 
 func (n *coreNeuron) getConnection() *connection {
 	return &n.conn
-}
-
-func (n *coreNeuron) getInput() chan float64 {
-	return n.input
-}
-
-func (n *coreNeuron) getOutput() chan float64 {
-	return n.output
-}
-
-func (n *coreNeuron) handle(value float64) {
-	n.broadcast(value)
 }
 
 func (n *coreNeuron) broadcast(value float64) {

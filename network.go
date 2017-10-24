@@ -85,7 +85,7 @@ func (n *Network) Calculate(input ...float64) []float64 {
 	}
 
 	for i, n := range n.getInputLayer().getNeurons() {
-		n.handle(input[i])
+		n.broadcast(input[i])
 	}
 
 	output := make([]float64, len(n.Output))

@@ -11,7 +11,7 @@ type synapse struct {
 	cache  float64
 }
 
-func (syn *synapse) Live() {
+func (syn *synapse) live() {
 	for {
 		syn.cache = <-syn.in
 		outputValue := syn.cache * syn.weight
@@ -29,5 +29,5 @@ func createSynapse(in Neuron, out Neuron) {
 	in.getConnection().addOutputSynapse(syn)
 	out.getConnection().addInputSynapse(syn)
 
-	go syn.Live()
+	go syn.live()
 }
