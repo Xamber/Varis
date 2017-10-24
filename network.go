@@ -9,8 +9,6 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-var DEBUG bool = false
-
 type Network struct {
 	Layers []Layerer
 	Output []chan float64
@@ -73,7 +71,7 @@ func (n *Network) getOutputLayer() Layerer {
 func (n *Network) runAllNeuron() {
 	for _, l := range n.Layers {
 		for _, neuron := range l.getNeurons() {
-			go neuron.alive()
+			go neuron.live()
 		}
 	}
 }
@@ -85,7 +83,7 @@ func (n *Network) Calculate(input ...float64) []float64 {
 	}
 
 	for i, n := range n.getInputLayer().getNeurons() {
-		n.broadcast(input[i])
+		n.getConnection().broadcastSignals(input[i])
 	}
 
 	output := make([]float64, len(n.Output))

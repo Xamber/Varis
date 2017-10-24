@@ -24,3 +24,20 @@ func (c *connection) getOutputSynapse() []*synapse {
 func (c *connection) getInputSynapse() []*synapse {
 	return c.outSynapses
 }
+
+func (c *connection) collectSignals() []float64 {
+
+	inputSignals := make([]float64, len(c.inSynapses))
+
+	for i := range inputSignals {
+		inputSignals[i] = <-c.inSynapses[i].out
+	}
+
+	return inputSignals
+}
+
+func (c *connection) broadcastSignals(value float64) {
+	for _, o := range c.outSynapses {
+		o.in <- value
+	}
+}
