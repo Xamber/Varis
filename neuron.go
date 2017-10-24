@@ -1,9 +1,5 @@
 package varis
 
-import (
-	"math/rand"
-)
-
 type Neuron interface {
 	getConnection() *connection
 	getCache() float64
@@ -28,29 +24,17 @@ func (n *baseNeuron) getCache() float64 {
 
 func (n *baseNeuron) train(neuronDelta float64) {
 	n.bias += neuronDelta
-	for _, s := range n.getConnection().inSynapses {
-		s.weight += s.cache * neuronDelta
-	}
+	n.getConnection().changeWeight(neuronDelta)
 }
 
 type inputNeuron struct {
 	baseNeuron
 }
 
-func createInputNeuron() *inputNeuron {
-	neuron := inputNeuron{baseNeuron{bias: rand.Float64()}}
-	return &neuron
-}
-
 func (n *inputNeuron) live() {}
 
 type hiddenNeuron struct {
 	baseNeuron
-}
-
-func createHiddenNeuron() *hiddenNeuron {
-	neuron := hiddenNeuron{baseNeuron{bias: rand.Float64()}}
-	return &neuron
 }
 
 func (n *hiddenNeuron) live() {
@@ -66,11 +50,6 @@ func (n *hiddenNeuron) live() {
 type outputNeuron struct {
 	baseNeuron
 	output chan float64
-}
-
-func createOutputNeuron(outputChan chan float64) *outputNeuron {
-	neuron := outputNeuron{baseNeuron{bias: rand.Float64()}, outputChan}
-	return &neuron
 }
 
 func (n *outputNeuron) live() {

@@ -30,16 +30,16 @@ func CreateNetwork(layers ...int) Network {
 
 			switch index {
 			case inputLayerIndex:
-				neuron = createInputNeuron()
+				neuron = &inputNeuron{baseNeuron{bias: rand.Float64()}}
 			case outputLayerIndex:
 				outputChan := make(chan float64)
-				neuron = createOutputNeuron(outputChan)
+				neuron = &outputNeuron{baseNeuron{bias: rand.Float64()}, outputChan}
 				network.Output = append(network.Output, outputChan)
 			default:
-				neuron = createHiddenNeuron()
+				neuron = &hiddenNeuron{baseNeuron{bias: rand.Float64()}}
 			}
 
-			layer.addNeuron(neuron)
+			layer.AddNeuron(neuron)
 
 		}
 		network.addLayer(layer)

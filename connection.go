@@ -13,14 +13,6 @@ func (c *connection) addInputSynapse(syn *synapse) {
 	c.inSynapses = append(c.inSynapses, syn)
 }
 
-func (c *connection) getOutputSynapse() []*synapse {
-	return c.outSynapses
-}
-
-func (c *connection) getInputSynapse() []*synapse {
-	return c.outSynapses
-}
-
 func (c *connection) collectSignals() []float64 {
 
 	inputSignals := make([]float64, len(c.inSynapses))
@@ -37,3 +29,11 @@ func (c *connection) broadcastSignals(value float64) {
 		o.in <- value
 	}
 }
+
+func (c *connection) changeWeight(delta float64) {
+	for _, s := range c.inSynapses {
+		s.weight += s.cache * delta
+	}
+}
+
+

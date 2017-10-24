@@ -1,6 +1,7 @@
 package varis
 
 type Layerer interface {
+	AddNeuron(neuron Neuron)
 	getNeurons() []Neuron
 	getCountOfNeurons() int
 	getNeuronByIndex(index int) Neuron
@@ -22,7 +23,7 @@ func ConnectLayers(now Layerer, next Layerer) {
 	}
 }
 
-func (l *layer) addNeuron(neuron Neuron) {
+func (l *layer) AddNeuron(neuron Neuron) {
 	l.neurons = append(l.neurons, neuron)
 }
 
