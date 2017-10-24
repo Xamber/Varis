@@ -4,7 +4,7 @@ type Neuron interface {
 	getConnection() *connection
 	getCache() float64
 
-	train(delta float64)
+	changeWeight(delta float64)
 	live()
 }
 
@@ -22,7 +22,7 @@ func (n *baseNeuron) getCache() float64 {
 	return n.cache
 }
 
-func (n *baseNeuron) train(neuronDelta float64) {
+func (n *baseNeuron) changeWeight(neuronDelta float64) {
 	n.bias += neuronDelta
 	n.getConnection().changeWeight(neuronDelta)
 }
