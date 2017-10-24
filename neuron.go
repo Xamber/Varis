@@ -5,11 +5,7 @@ import (
 )
 
 type Neuron interface {
-	addInputSynapse(syn *synapse)
-	addOutputSynapse(syn *synapse)
-
-	getInputSynapses() []*synapse
-	getOutputSynapses() []*synapse
+	getConnection() *connection
 
 	handle(value float64)
 	broadcast(value float64)
@@ -27,10 +23,13 @@ type Redirectable interface {
 }
 
 type coreNeuron struct {
-	bias        float64
-	cache       float64
-	inSynapses  []*synapse
-	outSynapses []*synapse
+	input  chan float64
+	output chan float64
+
+	conn connection
+
+	bias  float64
+	cache float64
 }
 
 type inputNeuron struct {
@@ -47,7 +46,7 @@ type outputNeuron struct {
 }
 
 func createCoreNeuron() coreNeuron {
-	return coreNeuron{bias: rand.Float64()}
+	return coreNeuron{bias: rand.Float64(), input: make(chan float64), output: make(chan float64)}
 }
 
 func createInputNeuron() *inputNeuron {
@@ -65,20 +64,8 @@ func createOutputNeuron(outputChan chan float64) *outputNeuron {
 	return &neuron
 }
 
-func (n *coreNeuron) addOutputSynapse(syn *synapse) {
-	n.outSynapses = append(n.outSynapses, syn)
-}
-
-func (n *coreNeuron) addInputSynapse(syn *synapse) {
-	n.inSynapses = append(n.inSynapses, syn)
-}
-
-func (n *coreNeuron) getOutputSynapses() []*synapse {
-	return n.outSynapses
-}
-
-func (n *coreNeuron) getInputSynapses() []*synapse {
-	return n.inSynapses
+func (n *coreNeuron) getConnection() *connection {
+	return &n.conn
 }
 
 func (n *coreNeuron) handle(value float64) {
@@ -86,15 +73,15 @@ func (n *coreNeuron) handle(value float64) {
 }
 
 func (n *coreNeuron) broadcast(value float64) {
-	for o := range n.outSynapses {
-		n.outSynapses[o].in <- value
+	for o := range n.getConnection().outSynapses {
+		n.getConnection().outSynapses[o].in <- value
 	}
 }
 
 func (n *coreNeuron) collectSignals() []float64 {
-	inputSignals := make([]float64, len(n.inSynapses))
+	inputSignals := make([]float64, len(n.getConnection().inSynapses))
 	for i := range inputSignals {
-		inputSignals[i] = <-n.inSynapses[i].out
+		inputSignals[i] = <-n.getConnection().inSynapses[i].out
 	}
 	return inputSignals
 }
@@ -111,7 +98,7 @@ func (n *coreNeuron) deactivation() float64 {
 
 func (n *coreNeuron) train(neuronDelta float64) {
 	n.bias += neuronDelta
-	for _, s := range n.inSynapses {
+	for _, s := range n.getConnection().inSynapses {
 		s.weight += s.cache * neuronDelta
 	}
 }
