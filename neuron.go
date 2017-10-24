@@ -14,7 +14,6 @@ type Neuron interface {
 
 type baseNeuron struct {
 	conn connection
-
 	bias  float64
 	cache float64
 }
@@ -43,9 +42,7 @@ func createInputNeuron() *inputNeuron {
 	return &neuron
 }
 
-func (n *inputNeuron) live() {
-	// Empty
-}
+func (n *inputNeuron) live() {}
 
 type hiddenNeuron struct {
 	baseNeuron
