@@ -10,30 +10,8 @@ var ACTIVATION func(x float64) float64 = func(x float64) float64 {
 }
 
 var DEACTIVATION func(x float64) float64 = func(x float64) float64 {
-	var fx = activation_sigmoid(x)
+	var fx = ACTIVATION(x)
 	return fx * (1 - fx)
-}
-
-func CreateInputNeuron() *Neuron {
-	return &Neuron{bias: rand.Float64()}
-}
-
-func CreateHiddenNeuron() *Neuron {
-	neuron := Neuron{bias: rand.Float64()}
-	neuron.callbackFunc = neuron.conn.broadcastSignals
-	return &neuron
-}
-
-func CreateOutputNeuron(network *Network) *Neuron {
-	outputChan := make(chan float64)
-	neuron := Neuron{bias: rand.Float64()}
-	neuron.callbackFunc = func(path chan float64) func(value float64) {
-		return func(value float64) {
-			path <- value
-		}
-	}(outputChan)
-	(*network).Output = append((*network).Output, outputChan)
-	return &neuron
 }
 
 func CreateNetwork(layers []int) Network {
@@ -59,4 +37,24 @@ func CreateNetwork(layers []int) Network {
 	network.RunNeurons()
 
 	return network
+}
+
+func CreateInputNeuron() *Neuron {
+	return &Neuron{bias: rand.Float64()}
+}
+
+func CreateHiddenNeuron() *Neuron {
+	neuron := Neuron{bias: rand.Float64()}
+	neuron.callbackFunc = neuron.conn.broadcastSignals
+	return &neuron
+}
+
+func CreateOutputNeuron(network *Network) *Neuron {
+	outputChan := make(chan float64)
+	neuron := Neuron{bias: rand.Float64()}
+	neuron.callbackFunc = func(value float64) {
+		outputChan <- value
+	}
+	(*network).Output = append((*network).Output, outputChan)
+	return &neuron
 }

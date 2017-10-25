@@ -1,20 +1,5 @@
 package varis
 
-import (
-	"math"
-)
-
-// activation function (sigmoid)
-func activation_sigmoid(x float64) float64 {
-	return 1 / (1 + math.Exp(-x))
-}
-
-// Derivative function
-func derivative_sigmoid(x float64) float64 {
-	var fx = activation_sigmoid(x)
-	return fx * (1 - fx)
-}
-
 // Function for sum all elements in slice
 func sum(data []float64) float64 {
 	var result float64
