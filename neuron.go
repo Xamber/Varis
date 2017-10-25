@@ -1,6 +1,6 @@
 package varis
 
-type Neuron interface {
+type Neuroner interface {
 	getConnection() *connection
 	getCache() float64
 
@@ -8,56 +8,38 @@ type Neuron interface {
 	live()
 }
 
-type baseNeuron struct {
-	conn connection
+type Neuron struct {
+	conn  connection
 	bias  float64
 	cache float64
+	aFunc func(value float64) float64
+	cFunc func(value float64)
 }
 
-func (n *baseNeuron) getConnection() *connection {
+func (n *Neuron) getConnection() *connection {
 	return &n.conn
 }
 
-func (n *baseNeuron) getCache() float64 {
+func (n *Neuron) getCache() float64 {
 	return n.cache
 }
 
-func (n *baseNeuron) changeWeight(neuronDelta float64) {
+func (n *Neuron) changeWeight(neuronDelta float64) {
 	n.bias += neuronDelta
 	n.getConnection().changeWeight(neuronDelta)
 }
 
-type inputNeuron struct {
-	baseNeuron
-}
+func (n *Neuron) live() {
 
-func (n *inputNeuron) live() {}
-
-type hiddenNeuron struct {
-	baseNeuron
-}
-
-func (n *hiddenNeuron) live() {
-	var signals []float64
-	for {
-		signals = n.getConnection().collectSignals()
-		n.cache = sum(signals) + n.bias
-		output := ACTIVATION_FUNCTION(n.cache)
-		n.getConnection().broadcastSignals(output)
+	if n.aFunc == nil || n.cFunc == nil {
+		return
 	}
-}
 
-type outputNeuron struct {
-	baseNeuron
-	output chan float64
-}
-
-func (n *outputNeuron) live() {
 	var signals []float64
 	for {
-		signals = n.getConnection().collectSignals()
+		signals = n.conn.collectSignals()
 		n.cache = sum(signals) + n.bias
-		output := ACTIVATION_FUNCTION(n.cache)
-		n.output <- output
+		output := n.aFunc(n.cache)
+		n.cFunc(output)
 	}
 }

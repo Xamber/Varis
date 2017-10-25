@@ -9,6 +9,11 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
+type Networker interface {
+	Calculate(input ...float64) []float64
+	AddLayer()
+}
+
 type Network struct {
 	Layers []Layerer
 	Output []chan float64
@@ -26,23 +31,27 @@ func CreateNetwork(layers ...int) Network {
 		layer := CreateLayer()
 
 		for i := 0; i < neurons; i++ {
-			var neuron Neuron
+			neuron := Neuron{bias: rand.Float64()}
+			neuron.aFunc = activation_sigmoid
 
 			switch index {
 			case inputLayerIndex:
-				neuron = &inputNeuron{baseNeuron{bias: rand.Float64()}}
+				// Empty for inputLayer
 			case outputLayerIndex:
 				outputChan := make(chan float64)
-				neuron = &outputNeuron{baseNeuron{bias: rand.Float64()}, outputChan}
+				neuron = Neuron{bias: rand.Float64()}
+				neuron.aFunc = activation_sigmoid
+				neuron.cFunc = neuron.conn.createRedirection(outputChan)
 				network.Output = append(network.Output, outputChan)
 			default:
-				neuron = &hiddenNeuron{baseNeuron{bias: rand.Float64()}}
+				neuron.aFunc = activation_sigmoid
+				neuron.cFunc = neuron.conn.broadcastSignals
 			}
 
-			layer.AddNeuron(neuron)
+			layer.AddNeuron(&neuron)
 
 		}
-		network.addLayer(layer)
+		network.AddLayer(layer)
 	}
 
 	for l := 0; l < len(network.Layers)-1; l++ {
@@ -51,12 +60,16 @@ func CreateNetwork(layers ...int) Network {
 		ConnectLayers(now, next)
 	}
 
-	network.runAllNeuron()
+	for _, l := range network.Layers {
+		for _, neuron := range l.getNeurons() {
+			go neuron.live()
+		}
+	}
 
 	return network
 }
 
-func (n *Network) addLayer(layer Layerer) {
+func (n *Network) AddLayer(layer Layerer) {
 	n.Layers = append(n.Layers, Layerer(layer))
 }
 
@@ -66,14 +79,6 @@ func (n *Network) getInputLayer() Layerer {
 
 func (n *Network) getOutputLayer() Layerer {
 	return n.Layers[len(n.Layers)-1]
-}
-
-func (n *Network) runAllNeuron() {
-	for _, l := range n.Layers {
-		for _, neuron := range l.getNeurons() {
-			go neuron.live()
-		}
-	}
 }
 
 func (n *Network) Calculate(input ...float64) []float64 {

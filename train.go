@@ -1,9 +1,5 @@
 package varis
 
-import (
-	"time"
-)
-
 type Frame struct {
 	Inputs   []float64
 	Expected []float64
@@ -21,17 +17,12 @@ func (t *Trainer) SetTrainFunc(newTrainFunction func(*Network, []float64, []floa
 }
 
 func (t *Trainer) TrainByDataset(dataset Dataset, times int) {
-
-	startTime := time.Now()
-
 	for times > 0 {
 		for _, f := range dataset {
 			t.TrainFunc(t.Network, f.Inputs, f.Expected, 1)
 		}
 		times--
 	}
-
-	debug("Training session complited by %v\n", time.Since(startTime))
 }
 
 func BackPropagation(network *Network, inputs []float64, expected []float64, speed int) {

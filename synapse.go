@@ -19,7 +19,7 @@ func (syn *synapse) live() {
 	}
 }
 
-func createSynapse(in Neuron, out Neuron) {
+func createSynapse(in Neuroner, out Neuroner) {
 	syn := &synapse{
 		weight: rand.Float64(),
 		in:     make(chan float64),
