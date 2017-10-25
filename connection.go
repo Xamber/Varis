@@ -30,12 +30,6 @@ func (c *connection) broadcastSignals(value float64) {
 	}
 }
 
-func (c *connection) createRedirection(path chan float64) func(value float64) {
-	return func(value float64) {
-		path <- value
-	}
-}
-
 func (c *connection) changeWeight(delta float64) {
 	for _, s := range c.inSynapses {
 		s.weight += s.cache * delta

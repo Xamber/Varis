@@ -32,7 +32,7 @@ func CreateNetwork(layers ...int) Network {
 
 		for i := 0; i < neurons; i++ {
 			neuron := Neuron{bias: rand.Float64()}
-			neuron.aFunc = activation_sigmoid
+			neuron.activationFunc = activation_sigmoid
 
 			switch index {
 			case inputLayerIndex:
@@ -40,12 +40,16 @@ func CreateNetwork(layers ...int) Network {
 			case outputLayerIndex:
 				outputChan := make(chan float64)
 				neuron = Neuron{bias: rand.Float64()}
-				neuron.aFunc = activation_sigmoid
-				neuron.cFunc = neuron.conn.createRedirection(outputChan)
+				neuron.activationFunc = activation_sigmoid
+				neuron.callbackFunc = func(path chan float64) func(value float64) {
+					return func(value float64) {
+						path <- value
+					}
+				}(outputChan)
 				network.Output = append(network.Output, outputChan)
 			default:
-				neuron.aFunc = activation_sigmoid
-				neuron.cFunc = neuron.conn.broadcastSignals
+				neuron.activationFunc = activation_sigmoid
+				neuron.callbackFunc = neuron.conn.broadcastSignals
 			}
 
 			layer.AddNeuron(&neuron)

@@ -9,11 +9,11 @@ type Neuroner interface {
 }
 
 type Neuron struct {
-	conn  connection
-	bias  float64
-	cache float64
-	aFunc func(value float64) float64
-	cFunc func(value float64)
+	conn           connection
+	bias           float64
+	cache          float64
+	activationFunc func(value float64) float64
+	callbackFunc   func(value float64)
 }
 
 func (n *Neuron) getConnection() *connection {
@@ -31,7 +31,7 @@ func (n *Neuron) changeWeight(neuronDelta float64) {
 
 func (n *Neuron) live() {
 
-	if n.aFunc == nil || n.cFunc == nil {
+	if n.activationFunc == nil || n.callbackFunc == nil {
 		return
 	}
 
@@ -39,7 +39,7 @@ func (n *Neuron) live() {
 	for {
 		signals = n.conn.collectSignals()
 		n.cache = sum(signals) + n.bias
-		output := n.aFunc(n.cache)
-		n.cFunc(output)
+		output := n.activationFunc(n.cache)
+		n.callbackFunc(output)
 	}
 }
