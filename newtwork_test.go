@@ -8,7 +8,7 @@ import (
 func BenchmarkNetwork(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
-		n := CreateNetwork(2, 3, 1)
+		n := CreateNetwork([]int{2, 3, 1})
 
 		dataset := Dataset{
 			Frame{[]float64{0.0, 0.0}, []float64{1.0}},
