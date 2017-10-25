@@ -11,18 +11,6 @@ type layer struct {
 	neurons []Neuroner
 }
 
-func CreateLayer() *layer {
-	return &layer{}
-}
-
-func ConnectLayers(now Layerer, next Layerer) {
-	for i := range now.getNeurons() {
-		for o := range next.getNeurons() {
-			createSynapse(now.getNeuronByIndex(i), next.getNeuronByIndex(o))
-		}
-	}
-}
-
 func (l *layer) AddNeuron(neuron Neuroner) {
 	l.neurons = append(l.neurons, neuron)
 }

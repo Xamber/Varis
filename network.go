@@ -28,7 +28,7 @@ func CreateNetwork(layers ...int) Network {
 
 	for index, neurons := range layers {
 
-		layer := CreateLayer()
+		layer := &layer{}
 
 		for i := 0; i < neurons; i++ {
 			neuron := Neuron{bias: rand.Float64()}
@@ -57,7 +57,11 @@ func CreateNetwork(layers ...int) Network {
 	for l := 0; l < len(network.Layers)-1; l++ {
 		now := network.Layers[l]
 		next := network.Layers[l+1]
-		ConnectLayers(now, next)
+		for i := range now.getNeurons() {
+			for o := range next.getNeurons() {
+				createSynapse(now.getNeuronByIndex(i), next.getNeuronByIndex(o))
+			}
+		}
 	}
 
 	for _, l := range network.Layers {
