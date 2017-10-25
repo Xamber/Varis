@@ -14,7 +14,7 @@ var DEACTIVATION func(x float64) float64 = func(x float64) float64 {
 	return fx * (1 - fx)
 }
 
-func CreateNetwork(layers []int) Network {
+func CreateNetwork(layers ...int) Network {
 	network := Network{Output: make([]chan float64, 0)}
 	for index, neurons := range layers {
 		layer := &layer{}
