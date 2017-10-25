@@ -1,5 +1,6 @@
 package varis
 
+// Layerer - contract for simple Layer
 type Layerer interface {
 	AddNeuron(neuron Neuroner)
 	getNeurons() []Neuroner

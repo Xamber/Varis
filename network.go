@@ -9,15 +9,18 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
+// Network impliment Neural Network by collect layers with Neurons, output channel for store signals from output Layer.
 type Network struct {
 	Layers []Layerer
 	Output []chan float64
 }
 
+// AddLayer add layer to Network.
 func (n *Network) AddLayer(layer Layerer) {
 	n.Layers = append(n.Layers, Layerer(layer))
 }
 
+// Calculate run network calculations, and wait signals in Output array of chan.
 func (n *Network) Calculate(input ...float64) []float64 {
 
 	if len(input) != n.GetInputLayer().getCountOfNeurons() {
@@ -37,6 +40,7 @@ func (n *Network) Calculate(input ...float64) []float64 {
 	return output
 }
 
+// RunNeurons create goroutine for all neuron in Network.
 func (n *Network) RunNeurons() {
 	for _, l := range n.Layers {
 		for _, neuron := range l.getNeurons() {
@@ -45,6 +49,7 @@ func (n *Network) RunNeurons() {
 	}
 }
 
+// ConnectLayers create all to all connection between layers.
 func (n *Network) ConnectLayers() {
 	for l := 0; l < len(n.Layers)-1; l++ {
 		now := n.Layers[l]
@@ -57,10 +62,12 @@ func (n *Network) ConnectLayers() {
 	}
 }
 
+// GetInputLayer from Network.
 func (n *Network) GetInputLayer() Layerer {
 	return n.Layers[0]
 }
 
+// GetOutputLayer from Network.
 func (n *Network) GetOutputLayer() Layerer {
 	return n.Layers[len(n.Layers)-1]
 }

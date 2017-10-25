@@ -1,15 +1,18 @@
 package varis
 
+// Dataset - simple structure for store input and expected values.
 type Dataset []struct {
 	input    []float64
 	expected []float64
 }
 
+// Trainer store Network and TrainFunc for training NN.
 type Trainer struct {
 	Network   *Network
 	TrainFunc func(*Network, []float64, []float64, int)
 }
 
+// TrainByDataset train NN by input dataset for 'times' times.
 func (t *Trainer) TrainByDataset(dataset Dataset, times int) {
 	for times > 0 {
 		for _, f := range dataset {
@@ -19,6 +22,7 @@ func (t *Trainer) TrainByDataset(dataset Dataset, times int) {
 	}
 }
 
+// BackPropagation is an algorithm for supervised learning of artificial neural networks using gradient descent.
 func BackPropagation(network *Network, inputs []float64, expected []float64, speed int) {
 	results := network.Calculate(inputs...)
 
