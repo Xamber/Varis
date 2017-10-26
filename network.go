@@ -71,3 +71,26 @@ func (n *Network) GetInputLayer() Layerer {
 func (n *Network) GetOutputLayer() Layerer {
 	return n.Layers[len(n.Layers)-1]
 }
+
+// CreateInputNeuron make new neuron without callback function.
+func (n *Network) createInputNeuron(uuid string, bias float64) *neuron {
+	return &neuron{bias: bias, uuid: uuid}
+}
+
+// CreateHiddenNeuron make new neuron with default callback function.
+func (n *Network) createHiddenNeuron(uuid string, bias float64) *neuron {
+	neuron := neuron{bias: bias, uuid: uuid}
+	neuron.callbackFunc = neuron.conn.broadcastSignals
+	return &neuron
+}
+
+// CreateOutputNeuron make new neuron with redirect output and append new channel to network.Output.
+func (n *Network) createOutputNeuron(uuid string, bias float64) *neuron {
+	outputChan := make(chan float64)
+	neuron := neuron{bias: bias, uuid: uuid}
+	neuron.callbackFunc = func(value float64) {
+		outputChan <- value
+	}
+	n.Output = append(n.Output, outputChan)
+	return &neuron
+}

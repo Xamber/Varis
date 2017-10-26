@@ -27,11 +27,11 @@ func CreateNetwork(layers ...int) Network {
 			var neuron Neuroner
 			switch index {
 			case 0: // Input layer
-				neuron = createInputNeuron()
+				neuron = network.createInputNeuron(generate_uuid(), rand.Float64())
 			case len(layers) - 1: // Output layer
-				neuron = createOutputNeuron(&network)
+				neuron = network.createOutputNeuron(generate_uuid(), rand.Float64())
 			default: // Hidden layer
-				neuron = createHiddenNeuron()
+				neuron = network.createHiddenNeuron(generate_uuid(), rand.Float64())
 			}
 			layer.AddNeuron(neuron)
 		}
@@ -42,27 +42,4 @@ func CreateNetwork(layers ...int) Network {
 	network.RunNeurons()
 
 	return network
-}
-
-// CreateInputNeuron make new neuron without callback function.
-func createInputNeuron() *neuron {
-	return &neuron{bias: rand.Float64()}
-}
-
-// CreateHiddenNeuron make new neuron with default callback function.
-func createHiddenNeuron() *neuron {
-	neuron := neuron{bias: rand.Float64()}
-	neuron.callbackFunc = neuron.conn.broadcastSignals
-	return &neuron
-}
-
-// CreateOutputNeuron make new neuron with redirect output and append new channel to network.Output.
-func createOutputNeuron(network *Network) *neuron {
-	outputChan := make(chan float64)
-	neuron := neuron{bias: rand.Float64()}
-	neuron.callbackFunc = func(value float64) {
-		outputChan <- value
-	}
-	(*network).Output = append((*network).Output, outputChan)
-	return &neuron
 }

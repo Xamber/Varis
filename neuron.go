@@ -12,6 +12,7 @@ type Neuroner interface {
 // Standart implimentation of Neuroner.
 type neuron struct {
 	conn         connection
+	uuid         string
 	bias         float64
 	cache        float64
 	callbackFunc func(value float64)
@@ -31,7 +32,6 @@ func (n *neuron) changeWeight(neuronDelta float64) {
 }
 
 func (n *neuron) live() {
-
 	if n.callbackFunc == nil {
 		return
 	}
