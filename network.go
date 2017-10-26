@@ -56,7 +56,7 @@ func (n *Network) ConnectLayers() {
 		next := n.Layers[l+1]
 		for i := range now.getNeurons() {
 			for o := range next.getNeurons() {
-				createSynapse(now.getNeuronByIndex(i), next.getNeuronByIndex(o))
+				createSynapse(now.getNeuronByIndex(i), next.getNeuronByIndex(o), generate_uuid(), rand.Float64())
 			}
 		}
 	}

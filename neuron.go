@@ -4,6 +4,7 @@ package varis
 type Neuroner interface {
 	getConnection() *connection
 	getUUID() string
+	getWeight() float64
 	deactivation() float64
 
 	changeWeight(delta float64)
@@ -25,6 +26,10 @@ func (n *neuron) getConnection() *connection {
 
 func (n *neuron) getUUID() string {
 	return n.uuid
+}
+
+func (n *neuron) getWeight() float64 {
+	return n.bias
 }
 
 func (n *neuron) deactivation() float64 {

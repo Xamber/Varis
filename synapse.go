@@ -1,9 +1,5 @@
 package varis
 
-import (
-	"math/rand"
-)
-
 type synapse struct {
 	weight     float64
 	uuid       string
@@ -22,10 +18,10 @@ func (syn *synapse) live() {
 	}
 }
 
-func createSynapse(in Neuroner, out Neuroner) {
+func createSynapse(in Neuroner, out Neuroner, uuid string, weight float64) {
 	syn := &synapse{
-		weight:     rand.Float64(),
-		uuid:       generate_uuid(),
+		weight:     weight,
+		uuid:       uuid,
 		in:         make(chan float64),
 		out:        make(chan float64),
 		inputUUID:  in.getUUID(),
