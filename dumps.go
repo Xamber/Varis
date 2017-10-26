@@ -24,7 +24,7 @@ type networkDump struct {
 func ToJSON(network Network) string {
 	dump := networkDump{}
 	for _, l := range network.Layers {
-		var layerDump []neuronDump
+		layerDump := []neuronDump{}
 		for _, n := range l.getNeurons() {
 			layerDump = append(layerDump, neuronDump{n.getUUID(), n.getWeight()})
 			for _, os := range n.getConnection().outSynapses {
@@ -38,7 +38,7 @@ func ToJSON(network Network) string {
 	return string(jsonString)
 }
 
-func FromJSON(jsonString string) *Network {
+func FromJSON(jsonString string) Network {
 	var load networkDump
 	cache := make(map[string]Neuroner)
 
@@ -69,5 +69,5 @@ func FromJSON(jsonString string) *Network {
 
 	network.RunNeurons()
 
-	return &network
+	return network
 }

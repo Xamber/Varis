@@ -25,7 +25,6 @@ func TestDumpToJSON(t *testing.T) {
 	fmt.Println(1.0, 1.0, "-", n.Calculate(1.0, 1.0))
 
 	js := ToJSON(n)
-	fmt.Println(js)
 
 	n2 := FromJSON(js)
 	fmt.Println(0.0, 0.0, "-", n2.Calculate(0.0, 0.0))
