@@ -5,30 +5,44 @@ import (
 )
 
 type neuronDump struct {
-	UUID   string  `json:"uuid"`
-	Weight float64 `json:"weight"`
+	UUID   string
+	Weight float64
 }
 
 type synapseDump struct {
-	UUID    string  `json:"uuid"`
-	Weight  float64 `json:"weight"`
-	InUUID  string  `json:"in"`
-	OutUUID string  `json:"out"`
+	UUID    string
+	Weight  float64
+	InUUID  string
+	OutUUID string
 }
 
+type layerDump []neuronDump
+
 type networkDump struct {
-	Neurons  [][]neuronDump `json:"neurons"`
-	Synapses []synapseDump  `json:"synapses"`
+	Neurons  []layerDump
+	Synapses []synapseDump
 }
 
 func ToJSON(network Network) string {
 	dump := networkDump{}
+
 	for _, l := range network.Layers {
-		layerDump := []neuronDump{}
+
+		layerDump := layerDump{}
 		for _, n := range l.getNeurons() {
-			layerDump = append(layerDump, neuronDump{n.getUUID(), n.getWeight()})
+			neuronDump := neuronDump{
+				n.getUUID(),
+				n.getWeight(),
+			}
+			layerDump = append(layerDump, neuronDump)
 			for _, os := range n.getConnection().outSynapses {
-				dump.Synapses = append(dump.Synapses, synapseDump{UUID: os.uuid, Weight: os.weight, InUUID: os.inputUUID, OutUUID: os.outputUUID})
+				synapseDump := synapseDump{
+					UUID:    os.uuid,
+					Weight:  os.weight,
+					InUUID:  os.inputUUID,
+					OutUUID: os.outputUUID,
+				}
+				dump.Synapses = append(dump.Synapses, synapseDump)
 			}
 		}
 		dump.Neurons = append(dump.Neurons, layerDump)
