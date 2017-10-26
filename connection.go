@@ -1,5 +1,7 @@
 package varis
 
+import "sync"
+
 type connection struct {
 	inSynapses  []*synapse
 	outSynapses []*synapse
@@ -15,12 +17,20 @@ func (c *connection) addInputSynapse(syn *synapse) {
 
 func (c *connection) collectSignals() []float64 {
 
-	inputSignals := make([]float64, len(c.inSynapses))
+	countOfInputs := len(c.inSynapses)
+	inputSignals := make([]float64, countOfInputs)
+
+	wg := sync.WaitGroup{}
+	wg.Add(countOfInputs)
 
 	for i := range inputSignals {
-		inputSignals[i] = <-c.inSynapses[i].out
+		go func(index int) {
+			inputSignals[index] = <-c.inSynapses[index].out
+			wg.Done()
+		}(i)
 	}
 
+	wg.Wait()
 	return inputSignals
 }
 

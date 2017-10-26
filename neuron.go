@@ -36,10 +36,8 @@ func (n *neuron) live() {
 		return
 	}
 
-	var signals []float64
-
 	for {
-		signals = n.conn.collectSignals()
+		signals := n.conn.collectSignals()
 		n.cache = sum(signals) + n.bias
 		output := ACTIVATION(n.cache)
 		n.callbackFunc(output)
