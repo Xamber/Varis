@@ -3,6 +3,7 @@ package varis
 // Neuroner interface with base biology neuron format.
 type Neuroner interface {
 	getConnection() *connection
+	getUUID() string
 	deactivation() float64
 
 	changeWeight(delta float64)
@@ -20,6 +21,10 @@ type neuron struct {
 
 func (n *neuron) getConnection() *connection {
 	return &n.conn
+}
+
+func (n *neuron) getUUID() string {
+	return n.uuid
 }
 
 func (n *neuron) deactivation() float64 {
