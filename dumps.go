@@ -10,10 +10,10 @@ type neuronDump struct {
 }
 
 type synapseDump struct {
-	UUID    string
-	Weight  float64
-	InUUID  string
-	OutUUID string
+	UUID      string
+	Weight    float64
+	InNeuron  string
+	OutNeuron string
 }
 
 type layerDump []neuronDump
@@ -36,10 +36,10 @@ func (network *Network) Dump() networkDump {
 			layerDump = append(layerDump, neuronDump)
 			for _, os := range n.getConnection().outSynapses {
 				synapseDump := synapseDump{
-					UUID:    os.uuid,
-					Weight:  os.weight,
-					InUUID:  os.inputUUID,
-					OutUUID: os.outputUUID,
+					UUID:      os.uuid,
+					Weight:    os.weight,
+					InNeuron:  os.inNeuron.getUUID(),
+					OutNeuron: os.outNeuron.getUUID(),
 				}
 				dump.Synapses = append(dump.Synapses, synapseDump)
 			}
@@ -72,7 +72,7 @@ func (load networkDump) Load() Network {
 	}
 
 	for _, s := range load.Synapses {
-		createSynapse(cache[s.InUUID], cache[s.OutUUID], s.UUID, s.Weight)
+		createSynapse(cache[s.InNeuron], cache[s.OutNeuron], s.UUID, s.Weight)
 	}
 
 	network.RunNeurons()
