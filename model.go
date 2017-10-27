@@ -1,21 +1,21 @@
 package varis
 
-type Normalizer interface {
+type Field interface {
 	convertTo()
 	convertFrom()
 }
 
 type Model struct {
 	network *Network
-	inputs  []Normalizer
-	outputs []Normalizer
+	inputs  []Field
+	outputs []Field
 }
 
-type Boolean struct {
+type BooleanField struct {
 	name string
 }
 
-func (b *Boolean) convertTo(signal float64) bool {
+func (b *BooleanField) convertTo(signal float64) bool {
 	if signal >= 0.5 {
 		return true
 	} else {
@@ -23,7 +23,7 @@ func (b *Boolean) convertTo(signal float64) bool {
 	}
 }
 
-func (b *Boolean) convertFrom(value bool) float64 {
+func (b *BooleanField) convertFrom(value bool) float64 {
 	if value == true {
 		return 0.00
 	} else {
