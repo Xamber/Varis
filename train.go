@@ -29,7 +29,7 @@ func BackPropagation(network *Network, inputs []float64, expected []float64, spe
 	layerDelta := 0.0
 	for l := len(network.Layers) - 1; l > 0; l-- {
 		nextLayerDelta := 0.00
-		for i, n := range network.Layers[l].getNeurons() {
+		for i, n := range network.Layers[l] {
 			var neuronDelta float64
 			if l == len(network.Layers)-1 {
 				neuronDelta = (expected[i] - results[i]) * n.deactivation()

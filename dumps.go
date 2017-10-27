@@ -28,7 +28,7 @@ func (network *Network) Dump() networkDump {
 
 	for _, l := range network.Layers {
 		layerDump := layerDump{}
-		for _, n := range l.getNeurons() {
+		for _, n := range l {
 			neuronDump := neuronDump{
 				n.getUUID(),
 				n.getWeight(),
@@ -54,7 +54,7 @@ func (load networkDump) Load() Network {
 
 	network := Network{Output: make([]chan float64, 0)}
 	for index, loadLayer := range load.Neurons {
-		layer := &layer{}
+		layer := layer{}
 		for _, n := range loadLayer {
 			var neuron Neuroner
 			switch index {

@@ -22,7 +22,7 @@ var DEACTIVATION neuronFunction = func(x float64) float64 {
 func CreateNetwork(layers ...int) Network {
 	network := Network{Output: make([]chan float64, 0)}
 	for index, neurons := range layers {
-		layer := &layer{}
+		layer := layer{}
 		for i := 0; i < neurons; i++ {
 			var neuron Neuroner
 			switch index {
