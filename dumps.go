@@ -23,11 +23,10 @@ type networkDump struct {
 	Synapses []synapseDump
 }
 
-func ToJSON(network Network) string {
+func (network *Network) Dump() networkDump {
 	dump := networkDump{}
 
 	for _, l := range network.Layers {
-
 		layerDump := layerDump{}
 		for _, n := range l.getNeurons() {
 			neuronDump := neuronDump{
@@ -47,16 +46,11 @@ func ToJSON(network Network) string {
 		}
 		dump.Neurons = append(dump.Neurons, layerDump)
 	}
-
-	jsonString, _ := json.Marshal(dump)
-	return string(jsonString)
+	return dump
 }
 
-func FromJSON(jsonString string) Network {
-	var load networkDump
+func (load networkDump) Load() Network {
 	cache := make(map[string]Neuroner)
-
-	json.Unmarshal([]byte(jsonString), &load)
 
 	network := Network{Output: make([]chan float64, 0)}
 	for index, loadLayer := range load.Neurons {
@@ -82,6 +76,21 @@ func FromJSON(jsonString string) Network {
 	}
 
 	network.RunNeurons()
+
+	return network
+}
+
+func ToJSON(network Network) string {
+	dump := network.Dump()
+	jsonString, _ := json.Marshal(dump)
+	return string(jsonString)
+}
+
+func FromJSON(jsonString string) Network {
+	var load networkDump
+
+	json.Unmarshal([]byte(jsonString), &load)
+	network := load.Load()
 
 	return network
 }
