@@ -6,7 +6,7 @@ type Dataset []struct {
 	expected []float64
 }
 
-// TrainByDataset train NN by input dataset for 'times' times.
+// BackPropagation train NN by input dataset for 'times' times.
 func BackPropagation(network *Network, dataset Dataset, times int) {
 
 	for times > 0 {
