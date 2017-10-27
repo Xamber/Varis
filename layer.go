@@ -1,7 +1,8 @@
 package varis
 
-type layer []Neuroner
+// Type layer collect Neuroner
+type Layer []Neuroner
 
-func (l *layer) AddNeuron(neuron Neuroner) {
+func (l *Layer) AddNeuron(neuron Neuroner) {
 	*l = append(*l, neuron)
 }

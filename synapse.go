@@ -18,7 +18,7 @@ func (syn *synapse) live() {
 	}
 }
 
-func createSynapse(in Neuroner, out Neuroner, uuid string, weight float64) {
+func ConnectNeurons(in Neuroner, out Neuroner, uuid string, weight float64) {
 	syn := &synapse{
 		weight:    weight,
 		uuid:      uuid,

@@ -9,14 +9,14 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-// Network impliment Neural Network by collect layers with Neurons, output channel for store signals from output Layer.
+// Network impliment Neural Network by collect Layers with Neurons, output channel for store signals from output Layer.
 type Network struct {
-	Layers []layer
+	Layers []Layer
 	Output []chan float64
 }
 
-// AddLayer add layer to Network.
-func (n *Network) AddLayer(layer layer) {
+// AddLayer add Layer to Network.
+func (n *Network) AddLayer(layer Layer) {
 	n.Layers = append(n.Layers, layer)
 }
 
@@ -56,19 +56,19 @@ func (n *Network) ConnectLayers() {
 		next := n.Layers[l+1]
 		for i := range now {
 			for o := range next {
-				createSynapse(now[i], next[o], generate_uuid(), rand.Float64())
+				ConnectNeurons(now[i], next[o], generate_uuid(), rand.Float64())
 			}
 		}
 	}
 }
 
 // GetInputLayer from Network.
-func (n *Network) GetInputLayer() layer {
+func (n *Network) GetInputLayer() Layer {
 	return n.Layers[0]
 }
 
 // GetOutputLayer from Network.
-func (n *Network) GetOutputLayer() layer {
+func (n *Network) GetOutputLayer() Layer {
 	return n.Layers[len(n.Layers)-1]
 }
 

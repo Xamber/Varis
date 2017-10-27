@@ -15,8 +15,7 @@ func TestDumpToJSON(t *testing.T) {
 		{[]float64{1.0, 1.0}, []float64{1.0}},
 	}
 
-	trainer := Trainer{&n, BackPropagation}
-	trainer.TrainByDataset(dataset, 10000)
+	BackPropagation(&n, dataset, 10000)
 
 	fmt.Println("After training")
 	fmt.Println(0.0, 0.0, "-", n.Calculate(0.0, 0.0))

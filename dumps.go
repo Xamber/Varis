@@ -54,7 +54,7 @@ func (load networkDump) Load() Network {
 
 	network := Network{Output: make([]chan float64, 0)}
 	for index, loadLayer := range load.Neurons {
-		layer := layer{}
+		layer := Layer{}
 		for _, n := range loadLayer {
 			var neuron Neuroner
 			switch index {
@@ -72,7 +72,7 @@ func (load networkDump) Load() Network {
 	}
 
 	for _, s := range load.Synapses {
-		createSynapse(cache[s.InNeuron], cache[s.OutNeuron], s.UUID, s.Weight)
+		ConnectNeurons(cache[s.InNeuron], cache[s.OutNeuron], s.UUID, s.Weight)
 	}
 
 	network.RunNeurons()
