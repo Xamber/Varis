@@ -1,8 +1,9 @@
 package varis
 
 type Field interface {
-	convertTo()
-	convertFrom()
+	getNeuronsCount() int
+	convertTo() float64
+	convertFrom(signal float64)
 }
 
 type Model struct {
@@ -11,20 +12,22 @@ type Model struct {
 	outputs []Field
 }
 
-type BooleanField struct {
-	name string
+type Bool bool
+
+func (b *Bool) getNeuronsCount() int {
+	return 1
 }
 
-func (b *BooleanField) convertTo(signal float64) bool {
+func (b *Bool) convertFrom(signal float64) {
 	if signal >= 0.5 {
-		return true
+		*b = true
 	} else {
-		return false
+		*b = false
 	}
 }
 
-func (b *BooleanField) convertFrom(value bool) float64 {
-	if value == true {
+func (b *Bool) convertTo() float64 {
+	if *b == true {
 		return 0.00
 	} else {
 		return 1.00
