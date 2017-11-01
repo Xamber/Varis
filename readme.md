@@ -39,10 +39,10 @@ Thank you. Artem.
         varis.BackPropagation(&n, dataset, 10000)
     
         fmt.Println("After training")
-        fmt.Println(0.0, 0.0, "-", n.Calculate(0.0, 0.0))
-        fmt.Println(1.0, 0.0, "-", n.Calculate(1.0, 0.0))
-        fmt.Println(0.0, 1.0, "-", n.Calculate(0.0, 1.0))
-        fmt.Println(1.0, 1.0, "-", n.Calculate(1.0, 1.0))
+        fmt.Println(0.0, 0.0, "-", n.Calculate(0.0, 0.0)) // [0.9817857087665229]
+        fmt.Println(1.0, 0.0, "-", n.Calculate(1.0, 0.0)) // [0.018289691420987294]
+        fmt.Println(0.0, 1.0, "-", n.Calculate(0.0, 1.0)) // [0.018289691420987294]
+        fmt.Println(1.0, 1.0, "-", n.Calculate(1.0, 1.0)) // [0.9850714312400469]
     }
 
 ## Roadmap
@@ -50,7 +50,7 @@ Thank you. Artem.
 - Add error return to functions.
 - Create more tests and benchmarks.
 - Create normal documentation.
-- Impliment Models (Normalize data from bool, integer, array etc.)
+- Implement Models (Normalize data from bool, integer, array etc.)
 - Create signal and weight types.
 
 
