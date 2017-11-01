@@ -97,7 +97,7 @@ func BenchmarkLargeNetwork(b *testing.B) {
 			{[]float64{1.0, 1.0}, []float64{1.0}},
 		}
 
-		BackPropagation(&n, dataset, 1000)
+		BackPropagation(&n, dataset, 10)
 
 		fmt.Println("After training")
 		fmt.Println(0.0, 0.0, "-", n.Calculate(0.0, 0.0))
