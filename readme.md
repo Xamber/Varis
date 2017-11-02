@@ -10,6 +10,7 @@ I would be happy if someone can find errors and give advice.
 Thank you. Artem.
 
 ## About package
+- No dependencies
 - All neurons and synapses are goroutines.
 - Golang channels for connecting neurons.
 - Neuron have callback function for redirect signal to output or any place you want.
