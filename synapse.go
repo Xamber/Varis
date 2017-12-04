@@ -6,8 +6,8 @@ type synapse struct {
 	in        chan float64
 	out       chan float64
 	cache     float64
-	inNeuron  Neuroner
-	outNeuron Neuroner
+	inNeuron  *Neuron
+	outNeuron *Neuron
 }
 
 func (syn *synapse) live() {
@@ -18,7 +18,7 @@ func (syn *synapse) live() {
 	}
 }
 
-func ConnectNeurons(in Neuroner, out Neuroner, uuid string, weight float64) {
+func ConnectNeurons(in *Neuron, out *Neuron, uuid string, weight float64) {
 	syn := &synapse{
 		weight:    weight,
 		uuid:      uuid,

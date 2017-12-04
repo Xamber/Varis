@@ -30,15 +30,15 @@ func (network *Network) Dump() networkDump {
 		layerDump := layerDump{}
 		for _, n := range l {
 			neuronDump := neuronDump{
-				n.getUUID(),
-				n.getWeight(),
+				n.uuid,
+				n.bias,
 			}
 			layerDump = append(layerDump, neuronDump)
 			for _, os := range n.getConnection().outSynapses {
 				synapseDump := synapseDump{
 					UUID:      os.uuid,
 					Weight:    os.weight,
-					InNeuron:  os.inNeuron.getUUID(),
+					InNeuron:  os.inNeuron.uuid,
 					OutNeuron: os.outNeuron.getUUID(),
 				}
 				dump.Synapses = append(dump.Synapses, synapseDump)
@@ -50,7 +50,7 @@ func (network *Network) Dump() networkDump {
 }
 
 func (load networkDump) Load() Network {
-	cache := make(map[string]Neuroner)
+	cache := make(map[string]*Neuron)
 
 	network := Network{Output: make([]chan float64, 0)}
 	for index, loadLayer := range load.Neurons {
