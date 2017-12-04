@@ -40,7 +40,7 @@ func (n *Network) Calculate(input []float64) []float64 {
 	return output
 }
 
-// RunNeurons create goroutine for all neuron in Network.
+// RunNeurons create goroutine for all Neuron in Network.
 func (n *Network) RunNeurons() {
 	for _, l := range n.Layers {
 		for _, neuron := range l {
@@ -72,22 +72,22 @@ func (n *Network) GetOutputLayer() Layer {
 	return n.Layers[len(n.Layers)-1]
 }
 
-// CreateInputNeuron make new neuron without callback function.
-func (n *Network) createInputNeuron(uuid string, bias float64) *neuron {
-	return &neuron{bias: bias, uuid: uuid}
+// CreateInputNeuron make new Neuron without callback function.
+func (n *Network) createInputNeuron(uuid string, bias float64) *Neuron {
+	return &Neuron{bias: bias, uuid: uuid}
 }
 
-// CreateHiddenNeuron make new neuron with default callback function.
-func (n *Network) createHiddenNeuron(uuid string, bias float64) *neuron {
-	neuron := neuron{bias: bias, uuid: uuid}
+// CreateHiddenNeuron make new Neuron with default callback function.
+func (n *Network) createHiddenNeuron(uuid string, bias float64) *Neuron {
+	neuron := Neuron{bias: bias, uuid: uuid}
 	neuron.callbackFunc = neuron.conn.broadcastSignals
 	return &neuron
 }
 
-// CreateOutputNeuron make new neuron with redirect output and append new channel to network.Output.
-func (n *Network) createOutputNeuron(uuid string, bias float64) *neuron {
+// CreateOutputNeuron make new Neuron with redirect output and append new channel to network.Output.
+func (n *Network) createOutputNeuron(uuid string, bias float64) *Neuron {
 	outputChan := make(chan float64)
-	neuron := neuron{bias: bias, uuid: uuid}
+	neuron := Neuron{bias: bias, uuid: uuid}
 	neuron.callbackFunc = func(value float64) {
 		outputChan <- value
 	}

@@ -1,6 +1,6 @@
 package varis
 
-// Neuroner interface with base biology neuron format.
+// Neuroner interface with base biology Neuron format.
 type Neuroner interface {
 	getConnection() *connection
 	getUUID() string
@@ -12,7 +12,7 @@ type Neuroner interface {
 }
 
 // Standart implimentation of Neuroner.
-type neuron struct {
+type Neuron struct {
 	conn         connection
 	uuid         string
 	bias         float64
@@ -20,28 +20,28 @@ type neuron struct {
 	callbackFunc func(value float64)
 }
 
-func (n *neuron) getConnection() *connection {
+func (n *Neuron) getConnection() *connection {
 	return &n.conn
 }
 
-func (n *neuron) getUUID() string {
+func (n *Neuron) getUUID() string {
 	return n.uuid
 }
 
-func (n *neuron) getWeight() float64 {
+func (n *Neuron) getWeight() float64 {
 	return n.bias
 }
 
-func (n *neuron) deactivation() float64 {
+func (n *Neuron) deactivation() float64 {
 	return DEACTIVATION(n.cache)
 }
 
-func (n *neuron) changeWeight(neuronDelta float64) {
+func (n *Neuron) changeWeight(neuronDelta float64) {
 	n.bias += neuronDelta
 	n.getConnection().changeWeight(neuronDelta)
 }
 
-func (n *neuron) live() {
+func (n *Neuron) live() {
 	if n.callbackFunc == nil {
 		return
 	}
