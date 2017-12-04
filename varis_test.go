@@ -46,19 +46,19 @@ func TestDumpToJSON(t *testing.T) {
 	json := ToJSON(n1)
 	n2 := FromJSON(json)
 
-	if n1.Calculate(0.0, 0.0)[0] != n2.Calculate(0.0, 0.0)[0] {
+	if n1.Calculate([]float64{0.0, 0.0})[0] != n2.Calculate([]float64{0.0, 0.0})[0] {
 		t.Error("Result of neural newtwork calculating not a same ")
 	}
 
-	if n1.Calculate(1.0, 0.0)[0] != n2.Calculate(1.0, 0.0)[0] {
+	if n1.Calculate([]float64{1.0, 0.0})[0] != n2.Calculate([]float64{1.0, 0.0})[0] {
 		t.Error("Result of neural newtwork calculating not a same ")
 	}
 
-	if n1.Calculate(0.0, 1.0)[0] != n2.Calculate(0.0, 1.0)[0] {
+	if n1.Calculate([]float64{0.0, 1.0})[0] != n2.Calculate([]float64{0.0, 1.0})[0] {
 		t.Error("Result of neural newtwork calculating not a same ")
 	}
 
-	if n1.Calculate(1.0, 1.0)[0] != n2.Calculate(1.0, 1.0)[0] {
+	if n1.Calculate([]float64{1.0, 1.0})[0] != n2.Calculate([]float64{1.0, 1.0})[0] {
 		t.Error("Result of neural newtwork calculating not a same ")
 	}
 }
@@ -78,10 +78,10 @@ func BenchmarkNetwork(b *testing.B) {
 		BackPropagation(&n, dataset, 10000)
 
 		fmt.Println("After training")
-		fmt.Println(0.0, 0.0, "-", n.Calculate(0.0, 0.0))
-		fmt.Println(1.0, 0.0, "-", n.Calculate(1.0, 0.0))
-		fmt.Println(0.0, 1.0, "-", n.Calculate(0.0, 1.0))
-		fmt.Println(1.0, 1.0, "-", n.Calculate(1.0, 1.0))
+		fmt.Println(0.0, 0.0, "-", n.Calculate([]float64{0.0, 0.0}))
+		fmt.Println(1.0, 0.0, "-", n.Calculate([]float64{1.0, 0.0}))
+		fmt.Println(0.0, 1.0, "-", n.Calculate([]float64{0.0, 1.0}))
+		fmt.Println(1.0, 1.0, "-", n.Calculate([]float64{1.0, 1.0}))
 	}
 }
 
@@ -100,9 +100,9 @@ func BenchmarkLargeNetwork(b *testing.B) {
 		BackPropagation(&n, dataset, 10)
 
 		fmt.Println("After training")
-		fmt.Println(0.0, 0.0, "-", n.Calculate(0.0, 0.0))
-		fmt.Println(1.0, 0.0, "-", n.Calculate(1.0, 0.0))
-		fmt.Println(0.0, 1.0, "-", n.Calculate(0.0, 1.0))
-		fmt.Println(1.0, 1.0, "-", n.Calculate(1.0, 1.0))
+		fmt.Println(0.0, 0.0, "-", n.Calculate([]float64{0.0, 0.0}))
+		fmt.Println(1.0, 0.0, "-", n.Calculate([]float64{1.0, 0.0}))
+		fmt.Println(0.0, 1.0, "-", n.Calculate([]float64{0.0, 1.0}))
+		fmt.Println(1.0, 1.0, "-", n.Calculate([]float64{1.0, 1.0}))
 	}
 }
