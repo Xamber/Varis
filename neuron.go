@@ -1,6 +1,6 @@
 package varis
 
-// Standart implimentation of Neuroner.
+// Standart implimentation of Neuron.
 type Neuron struct {
 	conn         connection
 	uuid         string

@@ -20,20 +20,29 @@ var DEACTIVATION neuronFunction = func(x float64) float64 {
 
 // CreateNetwork make new NN with count of neurons in each Layer.
 func CreateNetwork(layers ...int) Network {
+
 	network := Network{Output: make([]chan float64, 0)}
+
 	for index, neurons := range layers {
 		layer := Layer{}
 		for i := 0; i < neurons; i++ {
-			var neuron *Neuron
+			// Standart neuron implimentation
+			// callFunc  is neuron.connection.broadcast
+			var neuron = &Neuron{bias: rand.Float64(), uuid: generate_uuid()}
+			neuron.callbackFunc = neuron.conn.broadcastSignals
+
 			switch index {
-			case 0: // Input Layer
-				neuron = network.createInputNeuron(generate_uuid(), rand.Float64())
-			case len(layers) - 1: // Output Layer
+			case 0:
+				// Input layer
+				// Standart neuron implimentation without callFunc
+				neuron.callbackFunc = nil
+			case len(layers) - 1:
+				// Output layer
+				// Need to create output channel to redirect Neuron output to NetworkOutput
 				neuron = network.createOutputNeuron(generate_uuid(), rand.Float64())
-			default: // Hidden Layer
-				neuron = network.createHiddenNeuron(generate_uuid(), rand.Float64())
 			}
-			layer.AddNeuron(neuron)
+
+			layer = append(layer, neuron)
 		}
 		network.AddLayer(layer)
 	}
