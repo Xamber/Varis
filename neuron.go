@@ -1,16 +1,5 @@
 package varis
 
-// Neuroner interface with base biology Neuron format.
-type Neuroner interface {
-	getConnection() *connection
-	getUUID() string
-	getWeight() float64
-	deactivation() float64
-
-	changeWeight(delta float64)
-	live()
-}
-
 // Standart implimentation of Neuroner.
 type Neuron struct {
 	conn         connection
