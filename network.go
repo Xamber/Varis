@@ -21,7 +21,7 @@ func (n *Network) AddLayer(layer Layer) {
 }
 
 // Calculate run network calculations, and wait signals in Output array of chan.
-func (n *Network) Calculate(input ...float64) []float64 {
+func (n *Network) Calculate(input []float64) []float64 {
 
 	if len(input) != len(n.GetInputLayer()) {
 		panic("Check count of input value")

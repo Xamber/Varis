@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/xamber/Varis"
 	"fmt"
+	"github.com/xamber/Varis"
 )
 
 func main() {
@@ -18,8 +18,8 @@ func main() {
 	varis.BackPropagation(&n, dataset, 10000)
 
 	fmt.Println("After training")
-	fmt.Println(0.0, 0.0, "-", n.Calculate(0.0, 0.0))
-	fmt.Println(1.0, 0.0, "-", n.Calculate(1.0, 0.0))
-	fmt.Println(0.0, 1.0, "-", n.Calculate(0.0, 1.0))
-	fmt.Println(1.0, 1.0, "-", n.Calculate(1.0, 1.0))
+	fmt.Println(0.0, 0.0, "-", n.Calculate([]float64{0.0, 0.0}))
+	fmt.Println(1.0, 0.0, "-", n.Calculate([]float64{1.0, 0.0}))
+	fmt.Println(0.0, 1.0, "-", n.Calculate([]float64{0.0, 1.0}))
+	fmt.Println(1.0, 1.0, "-", n.Calculate([]float64{1.0, 1.0}))
 }
