@@ -56,7 +56,7 @@ func (load networkDump) Load() Network {
 	for index, loadLayer := range load.Neurons {
 		layer := Layer{}
 		for _, n := range loadLayer {
-			var neuron Neuroner
+			var neuron *Neuron
 			switch index {
 			case 0:
 				neuron = network.createInputNeuron(n.UUID, n.Weight)

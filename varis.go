@@ -24,7 +24,7 @@ func CreateNetwork(layers ...int) Network {
 	for index, neurons := range layers {
 		layer := Layer{}
 		for i := 0; i < neurons; i++ {
-			var neuron Neuroner
+			var neuron *Neuron
 			switch index {
 			case 0: // Input Layer
 				neuron = network.createInputNeuron(generate_uuid(), rand.Float64())
