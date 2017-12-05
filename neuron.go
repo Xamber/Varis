@@ -5,6 +5,7 @@ type Neuron struct {
 	conn         connection
 	weight       float64
 	cache        float64
+	collectFunc  func() []float64
 	callbackFunc func(value float64)
 }
 
@@ -18,12 +19,13 @@ func (n *Neuron) changeWeight(neuronDelta float64) {
 }
 
 func (n *Neuron) live() {
-	if n.callbackFunc == nil {
-		return
-	}
-
 	for {
-		signals := n.conn.collectSignals()
+		signals := n.collectFunc()
+
+		if n.callbackFunc == nil {
+			continue
+		}
+
 		n.cache = sum(signals) + n.weight
 		output := ACTIVATION(n.cache)
 		n.callbackFunc(output)

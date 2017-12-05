@@ -3,7 +3,12 @@ package varis
 import (
 	"math"
 	"math/rand"
+	"time"
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 type neuronFunction func(x float64) float64
 
@@ -32,6 +37,7 @@ func CreateNetwork(layers ...int) Network {
 			// We will overwrite callbackFunc later
 			var neuron = &Neuron{weight: rand.Float64()}
 			neuron.callbackFunc = neuron.conn.broadcastSignals
+			neuron.collectFunc = neuron.conn.collectSignals
 
 			switch index {
 			case 0:

@@ -10,11 +10,6 @@ type Network struct {
 	output []chan float64
 }
 
-// AddLayer add Layer to Network.
-func (n *Network) AddLayer(layer []*Neuron) {
-	n.layers = append(n.layers, layer)
-}
-
 // Calculate run network calculations, and wait signals in output array of chan.
 func (n *Network) Calculate(input []float64) []float64 {
 

@@ -64,6 +64,7 @@ func (load networkDump) Load() Network {
 		for _, n := range loadLayer {
 			neuron := &Neuron{weight: n.Weight}
 			neuron.callbackFunc = neuron.conn.broadcastSignals
+			neuron.collectFunc = neuron.conn.collectSignals
 			switch index {
 			case 0:
 				neuron.callbackFunc = nil
