@@ -5,15 +5,6 @@ import (
 	"fmt"
 )
 
-// Function for sum all elements in slice.
-func sum(data []float64) float64 {
-	var result float64
-	for _, i := range data {
-		result += i
-	}
-	return result
-}
-
 func generate_uuid() string {
 	b := make([]byte, 16)
 	rand.Read(b)

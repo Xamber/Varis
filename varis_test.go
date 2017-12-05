@@ -7,7 +7,7 @@ import (
 
 func TestSum(t *testing.T) {
 	vector := Vector{1.1, 2.2, 3.3}
-	summa := sum(vector)
+	summa := vector.sum()
 	if summa != 6.6 {
 		t.Error("Sums not equal")
 	}
@@ -15,7 +15,7 @@ func TestSum(t *testing.T) {
 
 func TestZeroSum(t *testing.T) {
 	vector := Vector{}
-	summa := sum(vector)
+	summa := vector.sum()
 	if summa != 0.0 {
 		t.Error("Sums not equal")
 	}

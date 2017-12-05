@@ -26,7 +26,7 @@ func (n *Neuron) live() {
 			continue
 		}
 
-		n.cache = sum(signals) + n.weight
+		n.cache = signals.sum() + n.weight
 		output := ACTIVATION(n.cache)
 		n.callbackFunc(output)
 	}
