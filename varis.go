@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+var PrintCalculation = false
+
 func init() {
 	rand.Seed(time.Now().UnixNano())
 }

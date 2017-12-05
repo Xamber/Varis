@@ -1,6 +1,7 @@
 package varis
 
 import (
+	"fmt"
 	"math/rand"
 )
 
@@ -19,6 +20,10 @@ func (n *Network) Calculate(input Vector) Vector {
 
 	input.Broadcast(n.input)
 	output := CollectVector(n.output)
+
+	if PrintCalculation == true {
+		fmt.Printf("Input: %v Output: %v\n", input, output)
+	}
 
 	return output
 }

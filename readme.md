@@ -23,27 +23,26 @@ Thank you. Artem.
 package main
 
 import (
-    "github.com/xamber/Varis"
-    "fmt"
+	"github.com/xamber/Varis"
 )
 
 func main() {
-    n := varis.CreateNetwork(2, 3, 1)
+	n := varis.CreateNetwork(2, 3, 1)
 
-    dataset := varis.Dataset{
-        {[]float64{0.0, 0.0}, []float64{1.0}},
-        {[]float64{1.0, 0.0}, []float64{0.0}},
-        {[]float64{0.0, 1.0}, []float64{0.0}},
-        {[]float64{1.0, 1.0}, []float64{1.0}},
-    }
+	dataset := varis.Dataset{
+		{varis.Vector{0.0, 0.0}, varis.Vector{1.0}},
+		{varis.Vector{1.0, 0.0}, varis.Vector{0.0}},
+		{varis.Vector{0.0, 1.0}, varis.Vector{0.0}},
+		{varis.Vector{1.0, 1.0}, varis.Vector{1.0}},
+	}
 
-    varis.BackPropagation(&n, dataset, 10000)
+	varis.BackPropagation(&n, dataset, 10000)
+	varis.PrintCalculation = true
 
-    fmt.Println("After training")
-    fmt.Println(0.0, 0.0, "-", n.Calculate(0.0, 0.0)) // [0.9817857087665229]
-    fmt.Println(1.0, 0.0, "-", n.Calculate(1.0, 0.0)) // [0.018289691420987294]
-    fmt.Println(0.0, 1.0, "-", n.Calculate(0.0, 1.0)) // [0.018289691420987294]
-    fmt.Println(1.0, 1.0, "-", n.Calculate(1.0, 1.0)) // [0.9850714312400469]
+	n.Calculate(varis.Vector{0.0, 0.0}) // [0.9817305250782501]
+	n.Calculate(varis.Vector{1.0, 0.0}) // [0.019886950176535658]
+	n.Calculate(varis.Vector{0.0, 1.0}) // [0.01911721247536342]
+	n.Calculate(varis.Vector{1.0, 1.0}) // [0.9847854383762864]
 }
 ```
 ## Roadmap
