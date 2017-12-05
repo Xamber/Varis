@@ -65,6 +65,7 @@ var DEACTIVATION neuronFunction = func(x float64) float64 {
 func CreateNetwork(layers ...int) Network {
 
 	network := Network{}
+	network.input = make([]chan float64, 0)
 	network.output = make([]chan float64, 0)
 
 	for index, neurons := range layers {
@@ -76,21 +77,24 @@ func CreateNetwork(layers ...int) Network {
 			var neuron = &Neuron{weight: rand.Float64()}
 			neuron.callbackFunc = neuron.conn.broadcastSignals
 			neuron.collectFunc = neuron.conn.collectSignals
+			neuron.activationFunc = neuron.standartActivation
 
 			switch index {
 			case 0:
 				// Input layer
 				// Standart neuron implimentation without callFunc
-				neuron.callbackFunc = nil
+				inputChan := make(chan float64)
+				network.input = append(network.input, inputChan)
+				handle := func() Vector {
+					return Vector{<-inputChan}
+				}
+				neuron.collectFunc = handle
+				neuron.SetPipeActivation()
 			case len(layers) - 1:
 				// output layer
 				// Need to create output channel to redirect Neuron output to NetworkOutput
-				outputChan := make(chan float64)
-				network.output = append(network.output, outputChan)
-				redirect := func(value float64) {
-					outputChan <- value
-				}
-				neuron.callbackFunc = redirect
+				network.output = append(network.output, make(chan float64))
+				neuron.SetRedirectOutput(network.output[i])
 			}
 			layer = append(layer, neuron)
 		}

@@ -18,8 +18,9 @@ func (n *Network) Calculate(input Vector) Vector {
 		panic("Check count of input value")
 	}
 
-	for i, n := range n.layers[0] {
-		n.conn.broadcastSignals(input[i])
+	for i := range n.layers[0] {
+		//n.conn.broadcastSignals(input[i])
+		n.input[i] <- input[i]
 	}
 
 	output := make(Vector, len(n.output))
