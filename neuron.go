@@ -4,7 +4,7 @@ package varis
 type Neuron struct {
 	conn         connection
 	uuid         string
-	bias         float64
+	weight       float64
 	cache        float64
 	callbackFunc func(value float64)
 }
@@ -14,7 +14,7 @@ func (n *Neuron) deactivation() float64 {
 }
 
 func (n *Neuron) changeWeight(neuronDelta float64) {
-	n.bias += neuronDelta
+	n.weight += neuronDelta
 	n.conn.changeWeight(neuronDelta)
 }
 
@@ -25,7 +25,7 @@ func (n *Neuron) live() {
 
 	for {
 		signals := n.conn.collectSignals()
-		n.cache = sum(signals) + n.bias
+		n.cache = sum(signals) + n.weight
 		output := ACTIVATION(n.cache)
 		n.callbackFunc(output)
 	}

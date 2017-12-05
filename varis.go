@@ -28,7 +28,7 @@ func CreateNetwork(layers ...int) Network {
 		for i := 0; i < neurons; i++ {
 			// Standart neuron implimentation
 			// callFunc  is neuron.connection.broadcast
-			var neuron = &Neuron{bias: rand.Float64(), uuid: generate_uuid()}
+			var neuron = &Neuron{weight: rand.Float64(), uuid: generate_uuid()}
 			neuron.callbackFunc = neuron.conn.broadcastSignals
 
 			switch index {

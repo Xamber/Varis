@@ -17,11 +17,11 @@ func (c *connection) addInputSynapse(syn *synapse) {
 
 func (c *connection) collectSignals() []float64 {
 
-	countOfInputs := len(c.inSynapses)
-	inputSignals := make([]float64, countOfInputs)
+	inputCount := len(c.inSynapses)
+	inputSignals := make([]float64, inputCount)
 
 	wg := sync.WaitGroup{}
-	wg.Add(countOfInputs)
+	wg.Add(inputCount)
 
 	for i := range inputSignals {
 		go func(index int) {

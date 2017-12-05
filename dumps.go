@@ -26,26 +26,33 @@ type networkDump struct {
 func (network *Network) Dump() networkDump {
 	dump := networkDump{}
 
+	neuronsUUIDs := make(map[*Neuron]string)
+
 	for _, l := range network.Layers {
 		layerDump := layerDump{}
 		for _, n := range l {
-			neuronDump := neuronDump{
-				n.uuid,
-				n.bias,
-			}
+			uuid := generate_uuid()
+			neuronsUUIDs[n] = uuid
+
+			neuronDump := neuronDump{uuid, n.weight}
 			layerDump = append(layerDump, neuronDump)
+		}
+		dump.Neurons = append(dump.Neurons, layerDump)
+	}
+	for _, l := range network.Layers {
+		for _, n := range l {
 			for _, os := range n.conn.outSynapses {
 				synapseDump := synapseDump{
 					UUID:      os.uuid,
 					Weight:    os.weight,
-					InNeuron:  os.inNeuron.uuid,
-					OutNeuron: os.outNeuron.uuid,
+					InNeuron:  neuronsUUIDs[os.inNeuron],
+					OutNeuron: neuronsUUIDs[os.outNeuron],
 				}
 				dump.Synapses = append(dump.Synapses, synapseDump)
 			}
 		}
-		dump.Neurons = append(dump.Neurons, layerDump)
 	}
+
 	return dump
 }
 
