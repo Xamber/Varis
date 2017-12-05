@@ -28,8 +28,8 @@ func ConnectNeurons(in *Neuron, out *Neuron, uuid string, weight float64) {
 		outNeuron: out,
 	}
 
-	in.getConnection().addOutputSynapse(syn)
-	out.getConnection().addInputSynapse(syn)
+	in.conn.addOutputSynapse(syn)
+	out.conn.addInputSynapse(syn)
 
 	go syn.live()
 }

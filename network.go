@@ -28,7 +28,7 @@ func (n *Network) Calculate(input []float64) []float64 {
 	}
 
 	for i, n := range n.GetInputLayer() {
-		n.getConnection().broadcastSignals(input[i])
+		n.conn.broadcastSignals(input[i])
 	}
 
 	output := make([]float64, len(n.Output))

@@ -34,12 +34,12 @@ func (network *Network) Dump() networkDump {
 				n.bias,
 			}
 			layerDump = append(layerDump, neuronDump)
-			for _, os := range n.getConnection().outSynapses {
+			for _, os := range n.conn.outSynapses {
 				synapseDump := synapseDump{
 					UUID:      os.uuid,
 					Weight:    os.weight,
 					InNeuron:  os.inNeuron.uuid,
-					OutNeuron: os.outNeuron.getUUID(),
+					OutNeuron: os.outNeuron.uuid,
 				}
 				dump.Synapses = append(dump.Synapses, synapseDump)
 			}
@@ -66,7 +66,7 @@ func (load networkDump) Load() Network {
 				neuron = network.createHiddenNeuron(n.UUID, n.Weight)
 			}
 			layer.AddNeuron(neuron)
-			cache[neuron.getUUID()] = neuron
+			cache[neuron.uuid] = neuron
 		}
 		network.AddLayer(layer)
 	}

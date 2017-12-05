@@ -9,25 +9,13 @@ type Neuron struct {
 	callbackFunc func(value float64)
 }
 
-func (n *Neuron) getConnection() *connection {
-	return &n.conn
-}
-
-func (n *Neuron) getUUID() string {
-	return n.uuid
-}
-
-func (n *Neuron) getWeight() float64 {
-	return n.bias
-}
-
 func (n *Neuron) deactivation() float64 {
 	return DEACTIVATION(n.cache)
 }
 
 func (n *Neuron) changeWeight(neuronDelta float64) {
 	n.bias += neuronDelta
-	n.getConnection().changeWeight(neuronDelta)
+	n.conn.changeWeight(neuronDelta)
 }
 
 func (n *Neuron) live() {
