@@ -71,31 +71,21 @@ func CreateNetwork(layers ...int) Network {
 	for index, neurons := range layers {
 		layer := []*Neuron{}
 		for i := 0; i < neurons; i++ {
-			// Standart neuron implimentation
-			// callFunc  is neuron.connection.broadcast
-			// We will overwrite callbackFunc later
-			var neuron = &Neuron{weight: rand.Float64()}
-			neuron.callbackFunc = neuron.conn.broadcastSignals
-			neuron.collectFunc = neuron.conn.collectSignals
-			neuron.activationFunc = neuron.standartActivation
+
+			var neuron *Neuron
+			var channel chan float64
 
 			switch index {
 			case 0:
-				// Input layer
-				// Standart neuron implimentation without callFunc
-				inputChan := make(chan float64)
-				network.input = append(network.input, inputChan)
-				handle := func() Vector {
-					return Vector{<-inputChan}
-				}
-				neuron.collectFunc = handle
-				neuron.SetPipeActivation()
+				neuron, channel = CreateNeuron(InputNeuron, rand.Float64())
+				network.input = append(network.input, channel)
 			case len(layers) - 1:
-				// output layer
-				// Need to create output channel to redirect Neuron output to NetworkOutput
-				network.output = append(network.output, make(chan float64))
-				neuron.SetRedirectOutput(network.output[i])
+				neuron, channel = CreateNeuron(OutputNeuron, rand.Float64())
+				network.output = append(network.output, channel)
+			default:
+				neuron, _ = CreateNeuron(HiddenNeuron, rand.Float64())
 			}
+
 			layer = append(layer, neuron)
 		}
 		network.layers = append(network.layers, layer)

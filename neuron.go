@@ -1,5 +1,11 @@
 package varis
 
+const (
+	InputNeuron = iota
+	HiddenNeuron
+	OutputNeuron
+)
+
 // Standart implimentation of Neuron.
 type Neuron struct {
 	conn           connection
@@ -8,6 +14,38 @@ type Neuron struct {
 	collectFunc    func() Vector
 	activationFunc func(vector Vector) float64
 	callbackFunc   func(value float64)
+}
+
+func CreateNeuron(neuronType int, weight float64) (*Neuron, chan float64) {
+
+	var neuron = &Neuron{weight: weight}
+	var channel = make(chan float64)
+
+	neuron.callbackFunc = neuron.conn.broadcastSignals
+	neuron.collectFunc = neuron.conn.collectSignals
+	neuron.activationFunc = func(vector Vector) float64 {
+		neuron.cache = vector.sum() + neuron.weight
+		return ACTIVATION(neuron.cache)
+	}
+
+	switch neuronType {
+	case InputNeuron:
+		channel = make(chan float64)
+		neuron.activationFunc = func(vector Vector) float64 {
+			return vector.sum()
+		}
+		neuron.collectFunc = func() Vector {
+			return Vector{<-channel}
+		}
+	case HiddenNeuron:
+		channel = nil
+	case OutputNeuron:
+		channel = make(chan float64)
+		neuron.callbackFunc = func(value float64) {
+			channel <- value
+		}
+	}
+	return neuron, channel
 }
 
 func (n *Neuron) deactivation() float64 {
@@ -36,12 +74,6 @@ func (n *Neuron) live() {
 	}
 }
 
-func (n *Neuron) standartActivation(vector Vector) float64 {
-	n.cache = vector.sum() + n.weight
-	output := ACTIVATION(n.cache)
-	return output
-}
-
 func (n *Neuron) SetPipeActivation() {
 	n.activationFunc = func(vector Vector) float64 {
 		return vector.sum()
@@ -55,9 +87,9 @@ func (n *Neuron) SetRedirectOutput(outputChan chan float64) {
 	n.callbackFunc = redirect
 }
 
-func (n *Neuron) SetExternalInput(outputChan chan float64) {
-	redirect := func(value float64) {
-		outputChan <- value
+func (n *Neuron) SetExternalInput(inputChan chan float64) {
+	handle := func() Vector {
+		return Vector{<-inputChan}
 	}
-	n.callbackFunc = redirect
+	n.collectFunc = handle
 }
