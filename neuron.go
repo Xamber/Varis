@@ -59,7 +59,7 @@ func (n *Neuron) changeWeight(neuronDelta float64) {
 
 func (n *Neuron) live() {
 
-	if n.collectFunc == nil && n.activationFunc == nil && n.callbackFunc == nil {
+	if n.activationFunc == nil && n.callbackFunc == nil {
 		panic("Neuron do nothing")
 	}
 
@@ -68,28 +68,6 @@ func (n *Neuron) live() {
 	}
 
 	for {
-		signals := n.collectFunc()
-		output := n.activationFunc(signals)
-		n.callbackFunc(output)
+		n.callbackFunc(n.activationFunc(n.collectFunc()))
 	}
-}
-
-func (n *Neuron) SetPipeActivation() {
-	n.activationFunc = func(vector Vector) float64 {
-		return vector.sum()
-	}
-}
-
-func (n *Neuron) SetRedirectOutput(outputChan chan float64) {
-	redirect := func(value float64) {
-		outputChan <- value
-	}
-	n.callbackFunc = redirect
-}
-
-func (n *Neuron) SetExternalInput(inputChan chan float64) {
-	handle := func() Vector {
-		return Vector{<-inputChan}
-	}
-	n.collectFunc = handle
 }

@@ -62,18 +62,18 @@ func (load networkDump) Load() Network {
 	for index, loadLayer := range load.Neurons {
 		layer := []*Neuron{}
 		for _, n := range loadLayer {
-			neuron := &Neuron{weight: n.Weight}
-			neuron.callbackFunc = neuron.conn.broadcastSignals
-			neuron.collectFunc = neuron.conn.collectSignals
+			var neuron *Neuron
+			var channel chan float64
+
 			switch index {
 			case 0:
-				neuron.callbackFunc = nil
+				neuron, channel = CreateNeuron(InputNeuron, n.Weight)
+				network.input = append(network.input, channel)
 			case len(load.Neurons) - 1:
-				outputChan := make(chan float64)
-				neuron.callbackFunc = func(value float64) {
-					outputChan <- value
-				}
-				network.output = append(network.output, outputChan)
+				neuron, channel = CreateNeuron(OutputNeuron, n.Weight)
+				network.output = append(network.output, channel)
+			default:
+				neuron, _ = CreateNeuron(HiddenNeuron, n.Weight)
 			}
 			layer = append(layer, neuron)
 			cache[n.UUID] = neuron
