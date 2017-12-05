@@ -30,7 +30,7 @@ type synapseDump struct {
 	OutNeuron string
 }
 
-func (network *Network) Dump() NetworkDump {
+func (network *Perceptron) Dump() NetworkDump {
 	dump := NetworkDump{}
 
 	neuronsUUIDs := make(map[*Neuron]string)
@@ -62,10 +62,10 @@ func (network *Network) Dump() NetworkDump {
 	return dump
 }
 
-func (load NetworkDump) Load() Network {
+func (load NetworkDump) Load() Perceptron {
 	cache := make(map[string]*Neuron)
 
-	network := Network{output: make([]chan float64, 0)}
+	network := Perceptron{output: make([]chan float64, 0)}
 	for index, loadLayer := range load.Neurons {
 		layer := []*Neuron{}
 		for _, n := range loadLayer {
@@ -97,13 +97,13 @@ func (load NetworkDump) Load() Network {
 	return network
 }
 
-func ToJSON(network Network) string {
+func ToJSON(network Perceptron) string {
 	dump := network.Dump()
 	jsonString, _ := json.Marshal(dump)
 	return string(jsonString)
 }
 
-func FromJSON(jsonString string) Network {
+func FromJSON(jsonString string) Perceptron {
 	var load NetworkDump
 
 	json.Unmarshal([]byte(jsonString), &load)

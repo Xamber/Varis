@@ -7,7 +7,7 @@ type Dataset []struct {
 }
 
 // BackPropagation train NN by input dataset for 'times' times.
-func BackPropagation(network *Network, dataset Dataset, times int) {
+func BackPropagation(network *Perceptron, dataset Dataset, times int) {
 	var neuronDelta float64
 
 	for times > 0 {

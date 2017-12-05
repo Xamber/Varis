@@ -5,15 +5,15 @@ import (
 	"math/rand"
 )
 
-// Network impliment Neural Network by collect layers with Neurons, output channel for store signals from output Layer.
-type Network struct {
+// Perceptron impliment Neural Perceptron by collect layers with Neurons, output channel for store signals from output Layer.
+type Perceptron struct {
 	layers [][]*Neuron
 	input  []chan float64
 	output []chan float64
 }
 
 // Calculate run network calculations, and wait signals in output array of chan.
-func (n *Network) Calculate(input Vector) Vector {
+func (n *Perceptron) Calculate(input Vector) Vector {
 	if len(input) != len(n.layers[0]) {
 		panic("Check count of input value")
 	}
@@ -28,8 +28,8 @@ func (n *Network) Calculate(input Vector) Vector {
 	return output
 }
 
-// RunNeurons create goroutine for all Neuron in Network.
-func (n *Network) RunNeurons() {
+// RunNeurons create goroutine for all Neuron in Perceptron.
+func (n *Perceptron) RunNeurons() {
 	for _, l := range n.layers {
 		for _, neuron := range l {
 			go neuron.live()
@@ -38,7 +38,7 @@ func (n *Network) RunNeurons() {
 }
 
 // ConnectLayers create all to all connection between layers.
-func (n *Network) ConnectLayers() {
+func (n *Perceptron) ConnectLayers() {
 	for l := 0; l < len(n.layers)-1; l++ {
 		now := n.layers[l]
 		next := n.layers[l+1]
@@ -50,10 +50,10 @@ func (n *Network) ConnectLayers() {
 	}
 }
 
-// CreateNetwork make new NN with count of neurons in each Layer.
-func CreateNetwork(layers ...int) Network {
+// CreatePerceptron make new NN with count of neurons in each Layer.
+func CreatePerceptron(layers ...int) Perceptron {
 
-	network := Network{}
+	network := Perceptron{}
 	network.input = make([]chan float64, 0)
 	network.output = make([]chan float64, 0)
 

@@ -29,7 +29,7 @@ func TestGenerateUUID(t *testing.T) {
 }
 
 func TestNetworkFunction(t *testing.T) {
-	_ = CreateNetwork(2, 3, 1)
+	_ = CreatePerceptron(2, 3, 1)
 }
 
 func TestDeactivationFunction(t *testing.T) {
@@ -45,7 +45,7 @@ func TestActivationFunction(t *testing.T) {
 }
 
 func TestNetworkTrain(t *testing.T) {
-	nn := CreateNetwork(2, 3, 1)
+	nn := CreatePerceptron(2, 3, 1)
 
 	dataset := Dataset{
 		{Vector{0.0, 0.0}, Vector{1.0}},
@@ -76,7 +76,7 @@ func TestNetworkTrain(t *testing.T) {
 
 func TestNetworkCalculate(t *testing.T) {
 	rand.Seed(1488)
-	nn := CreateNetwork(2, 3, 1)
+	nn := CreatePerceptron(2, 3, 1)
 
 	if nn.Calculate(Vector{0.0, 0.0})[0] != 0.6631222149019123 {
 		t.Error("Wrong with calculation")
@@ -84,7 +84,7 @@ func TestNetworkCalculate(t *testing.T) {
 }
 
 func TestDumpToJSON(t *testing.T) {
-	n1 := CreateNetwork(2, 3, 1)
+	n1 := CreatePerceptron(2, 3, 1)
 
 	dataset := Dataset{
 		{Vector{0.0, 0.0}, Vector{1.0}},

@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	n := varis.CreateNetwork(2, 3, 1)
+	n := varis.CreatePerceptron(2, 3, 1)
 
 	dataset := varis.Dataset{
 		{varis.Vector{0.0, 0.0}, varis.Vector{1.0}},
