@@ -13,21 +13,12 @@ type Network struct {
 
 // Calculate run network calculations, and wait signals in output array of chan.
 func (n *Network) Calculate(input Vector) Vector {
-
 	if len(input) != len(n.layers[0]) {
 		panic("Check count of input value")
 	}
 
-	for i := range n.layers[0] {
-		//n.conn.broadcastSignals(input[i])
-		n.input[i] <- input[i]
-	}
-
-	output := make(Vector, len(n.output))
-
-	for i := range output {
-		output[i] = <-n.output[i]
-	}
+	input.Broadcast(n.input)
+	output := CollectVector(n.output)
 
 	return output
 }
