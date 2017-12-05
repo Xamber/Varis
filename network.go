@@ -44,3 +44,39 @@ func (n *Network) ConnectLayers() {
 		}
 	}
 }
+
+// CreateNetwork make new NN with count of neurons in each Layer.
+func CreateNetwork(layers ...int) Network {
+
+	network := Network{}
+	network.input = make([]chan float64, 0)
+	network.output = make([]chan float64, 0)
+
+	for index, neurons := range layers {
+		layer := []*Neuron{}
+		for i := 0; i < neurons; i++ {
+
+			var neuron *Neuron
+			var channel chan float64
+
+			switch index {
+			case 0:
+				neuron, channel = CreateNeuron(InputNeuron, rand.Float64())
+				network.input = append(network.input, channel)
+			case len(layers) - 1:
+				neuron, channel = CreateNeuron(OutputNeuron, rand.Float64())
+				network.output = append(network.output, channel)
+			default:
+				neuron, _ = CreateNeuron(HiddenNeuron, rand.Float64())
+			}
+
+			layer = append(layer, neuron)
+		}
+		network.layers = append(network.layers, layer)
+	}
+
+	network.ConnectLayers()
+	network.RunNeurons()
+
+	return network
+}
