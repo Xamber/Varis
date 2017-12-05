@@ -22,14 +22,14 @@ var DEACTIVATION neuronFunction = func(x float64) float64 {
 func CreateNetwork(layers ...int) Network {
 
 	network := Network{}
-	network.Output = make([]chan float64, 0)
+	network.output = make([]chan float64, 0)
 
 	for index, neurons := range layers {
 		layer := []*Neuron{}
 		for i := 0; i < neurons; i++ {
 			// Standart neuron implimentation
 			// callFunc  is neuron.connection.broadcast
-			// We will overwrite
+			// We will overwrite callbackFunc later
 			var neuron = &Neuron{weight: rand.Float64()}
 			neuron.callbackFunc = neuron.conn.broadcastSignals
 
@@ -39,17 +39,18 @@ func CreateNetwork(layers ...int) Network {
 				// Standart neuron implimentation without callFunc
 				neuron.callbackFunc = nil
 			case len(layers) - 1:
-				// Output layer
+				// output layer
 				// Need to create output channel to redirect Neuron output to NetworkOutput
 				outputChan := make(chan float64)
-				neuron.callbackFunc = func(value float64) {
+				network.output = append(network.output, outputChan)
+				redirect := func(value float64) {
 					outputChan <- value
 				}
-				network.Output = append(network.Output, outputChan)
+				neuron.callbackFunc = redirect
 			}
 			layer = append(layer, neuron)
 		}
-		network.AddLayer(layer)
+		network.layers = append(network.layers, layer)
 	}
 
 	network.ConnectLayers()

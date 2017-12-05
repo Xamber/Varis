@@ -14,10 +14,10 @@ func BackPropagation(network *Network, dataset Dataset, times int) {
 		for _, f := range dataset {
 			results := network.Calculate(f.Input)
 			layerDelta := 0.0
-			for l := len(network.Layers) - 1; l > 0; l-- {
+			for l := len(network.layers) - 1; l > 0; l-- {
 				nextLayerDelta := 0.00
-				for i, n := range network.Layers[l] {
-					if l == len(network.Layers)-1 {
+				for i, n := range network.layers[l] {
+					if l == len(network.layers)-1 {
 						neuronDelta = (f.Expected[i] - results[i]) * DEACTIVATION(n.cache)
 					} else {
 						neuronDelta = layerDelta * DEACTIVATION(n.cache)

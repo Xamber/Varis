@@ -28,7 +28,7 @@ func (network *Network) Dump() networkDump {
 
 	neuronsUUIDs := make(map[*Neuron]string)
 
-	for _, l := range network.Layers {
+	for _, l := range network.layers {
 		layerDump := layerDump{}
 		for _, n := range l {
 			uuid := generate_uuid()
@@ -39,7 +39,7 @@ func (network *Network) Dump() networkDump {
 		}
 		dump.Neurons = append(dump.Neurons, layerDump)
 	}
-	for _, l := range network.Layers {
+	for _, l := range network.layers {
 		for _, n := range l {
 			for _, os := range n.conn.outSynapses {
 				synapseDump := synapseDump{
@@ -58,7 +58,7 @@ func (network *Network) Dump() networkDump {
 func (load networkDump) Load() Network {
 	cache := make(map[string]*Neuron)
 
-	network := Network{Output: make([]chan float64, 0)}
+	network := Network{output: make([]chan float64, 0)}
 	for index, loadLayer := range load.Neurons {
 		layer := []*Neuron{}
 		for _, n := range loadLayer {
@@ -72,12 +72,12 @@ func (load networkDump) Load() Network {
 				neuron.callbackFunc = func(value float64) {
 					outputChan <- value
 				}
-				network.Output = append(network.Output, outputChan)
+				network.output = append(network.output, outputChan)
 			}
 			layer = append(layer, neuron)
 			cache[n.UUID] = neuron
 		}
-		network.AddLayer(layer)
+		network.layers = append(network.layers, layer)
 	}
 
 	for _, s := range load.Synapses {

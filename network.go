@@ -4,32 +4,32 @@ import (
 	"math/rand"
 )
 
-// Network impliment Neural Network by collect Layers with Neurons, output channel for store signals from output Layer.
+// Network impliment Neural Network by collect layers with Neurons, output channel for store signals from output Layer.
 type Network struct {
-	Layers [][]*Neuron
-	Output []chan float64
+	layers [][]*Neuron
+	output []chan float64
 }
 
 // AddLayer add Layer to Network.
 func (n *Network) AddLayer(layer []*Neuron) {
-	n.Layers = append(n.Layers, layer)
+	n.layers = append(n.layers, layer)
 }
 
-// Calculate run network calculations, and wait signals in Output array of chan.
+// Calculate run network calculations, and wait signals in output array of chan.
 func (n *Network) Calculate(input []float64) []float64 {
 
-	if len(input) != len(n.Layers[0]) {
+	if len(input) != len(n.layers[0]) {
 		panic("Check count of input value")
 	}
 
-	for i, n := range n.Layers[0] {
+	for i, n := range n.layers[0] {
 		n.conn.broadcastSignals(input[i])
 	}
 
-	output := make([]float64, len(n.Output))
+	output := make([]float64, len(n.output))
 
 	for i := range output {
-		output[i] = <-n.Output[i]
+		output[i] = <-n.output[i]
 	}
 
 	return output
@@ -37,7 +37,7 @@ func (n *Network) Calculate(input []float64) []float64 {
 
 // RunNeurons create goroutine for all Neuron in Network.
 func (n *Network) RunNeurons() {
-	for _, l := range n.Layers {
+	for _, l := range n.layers {
 		for _, neuron := range l {
 			go neuron.live()
 		}
@@ -46,9 +46,9 @@ func (n *Network) RunNeurons() {
 
 // ConnectLayers create all to all connection between layers.
 func (n *Network) ConnectLayers() {
-	for l := 0; l < len(n.Layers)-1; l++ {
-		now := n.Layers[l]
-		next := n.Layers[l+1]
+	for l := 0; l < len(n.layers)-1; l++ {
+		now := n.layers[l]
+		next := n.layers[l+1]
 		for i := range now {
 			for o := range next {
 				ConnectNeurons(now[i], next[o], rand.Float64())
