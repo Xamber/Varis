@@ -2,21 +2,16 @@ package varis
 
 import (
 	"math/rand"
-	"time"
 )
-
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
 
 // Network impliment Neural Network by collect Layers with Neurons, output channel for store signals from output Layer.
 type Network struct {
-	Layers []Layer
+	Layers [][]*Neuron
 	Output []chan float64
 }
 
 // AddLayer add Layer to Network.
-func (n *Network) AddLayer(layer Layer) {
+func (n *Network) AddLayer(layer []*Neuron) {
 	n.Layers = append(n.Layers, layer)
 }
 
@@ -60,9 +55,4 @@ func (n *Network) ConnectLayers() {
 			}
 		}
 	}
-}
-
-// GetInputLayer from Network.
-func (n *Network) GetInputLayer() Layer {
-	return n.Layers[0]
 }

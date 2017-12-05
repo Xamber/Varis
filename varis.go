@@ -25,7 +25,7 @@ func CreateNetwork(layers ...int) Network {
 	network.Output = make([]chan float64, 0)
 
 	for index, neurons := range layers {
-		layer := Layer{}
+		layer := []*Neuron{}
 		for i := 0; i < neurons; i++ {
 			// Standart neuron implimentation
 			// callFunc  is neuron.connection.broadcast

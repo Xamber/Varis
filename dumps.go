@@ -60,7 +60,7 @@ func (load networkDump) Load() Network {
 
 	network := Network{Output: make([]chan float64, 0)}
 	for index, loadLayer := range load.Neurons {
-		layer := Layer{}
+		layer := []*Neuron{}
 		for _, n := range loadLayer {
 			neuron := &Neuron{weight: n.Weight}
 			neuron.callbackFunc = neuron.conn.broadcastSignals
@@ -74,7 +74,7 @@ func (load networkDump) Load() Network {
 				}
 				network.Output = append(network.Output, outputChan)
 			}
-			layer.AddNeuron(neuron)
+			layer = append(layer, neuron)
 			cache[n.UUID] = neuron
 		}
 		network.AddLayer(layer)
