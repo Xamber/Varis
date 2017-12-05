@@ -48,12 +48,10 @@ func (c *connection) addInputSynapse(syn *synapse) {
 }
 
 func (c *connection) collectSignals() Vector {
-
-	inputCount := len(c.inSynapses)
-	inputSignals := make(Vector, inputCount)
+	inputSignals := make(Vector, len(c.inSynapses))
 
 	wg := sync.WaitGroup{}
-	wg.Add(inputCount)
+	wg.Add(len(c.inSynapses))
 
 	for i := range inputSignals {
 		go func(index int) {

@@ -12,7 +12,6 @@ func init() {
 }
 
 type Vector []float64
-
 type neuronFunction func(x float64) float64
 
 func (v Vector) sum() (result float64) {
