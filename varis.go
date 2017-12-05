@@ -7,11 +7,11 @@ import (
 	"time"
 )
 
-var PrintCalculation = false
-
 func init() {
 	rand.Seed(time.Now().UnixNano())
 }
+
+var PrintCalculation = false
 
 type Vector []float64
 type neuronFunction func(x float64) float64
@@ -41,10 +41,10 @@ func CollectVector(channels []chan float64) (vector Vector) {
 	wg.Add(count)
 
 	for i, c := range channels {
-		go func(index int) {
-			vector[index] = <-c
+		go func(index int, channel chan float64) {
+			vector[index] = <-channel
 			wg.Done()
-		}(i)
+		}(i, c)
 	}
 
 	wg.Wait()
