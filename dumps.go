@@ -4,6 +4,11 @@ import (
 	"encoding/json"
 )
 
+type NetworkDump struct {
+	Neurons  [][]neuronDump
+	Synapses []synapseDump
+}
+
 type neuronDump struct {
 	UUID   string
 	Weight float64
@@ -16,20 +21,13 @@ type synapseDump struct {
 	OutNeuron string
 }
 
-type layerDump []neuronDump
-
-type networkDump struct {
-	Neurons  []layerDump
-	Synapses []synapseDump
-}
-
-func (network *Network) Dump() networkDump {
-	dump := networkDump{}
+func (network *Network) Dump() NetworkDump {
+	dump := NetworkDump{}
 
 	neuronsUUIDs := make(map[*Neuron]string)
 
 	for _, l := range network.layers {
-		layerDump := layerDump{}
+		layerDump := []neuronDump{}
 		for _, n := range l {
 			uuid := generate_uuid()
 			neuronsUUIDs[n] = uuid
@@ -55,7 +53,7 @@ func (network *Network) Dump() networkDump {
 	return dump
 }
 
-func (load networkDump) Load() Network {
+func (load NetworkDump) Load() Network {
 	cache := make(map[string]*Neuron)
 
 	network := Network{output: make([]chan float64, 0)}
@@ -97,7 +95,7 @@ func ToJSON(network Network) string {
 }
 
 func FromJSON(jsonString string) Network {
-	var load networkDump
+	var load NetworkDump
 
 	json.Unmarshal([]byte(jsonString), &load)
 	network := load.Load()
