@@ -7,11 +7,12 @@ import (
 // Network impliment Neural Network by collect layers with Neurons, output channel for store signals from output Layer.
 type Network struct {
 	layers [][]*Neuron
+	input  []chan float64
 	output []chan float64
 }
 
 // Calculate run network calculations, and wait signals in output array of chan.
-func (n *Network) Calculate(input []float64) []float64 {
+func (n *Network) Calculate(input Vector) Vector {
 
 	if len(input) != len(n.layers[0]) {
 		panic("Check count of input value")
@@ -21,7 +22,7 @@ func (n *Network) Calculate(input []float64) []float64 {
 		n.conn.broadcastSignals(input[i])
 	}
 
-	output := make([]float64, len(n.output))
+	output := make(Vector, len(n.output))
 
 	for i := range output {
 		output[i] = <-n.output[i]

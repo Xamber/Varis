@@ -47,10 +47,10 @@ func (c *connection) addInputSynapse(syn *synapse) {
 	c.inSynapses = append(c.inSynapses, syn)
 }
 
-func (c *connection) collectSignals() []float64 {
+func (c *connection) collectSignals() Vector {
 
 	inputCount := len(c.inSynapses)
-	inputSignals := make([]float64, inputCount)
+	inputSignals := make(Vector, inputCount)
 
 	wg := sync.WaitGroup{}
 	wg.Add(inputCount)

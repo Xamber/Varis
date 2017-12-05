@@ -5,7 +5,7 @@ type Neuron struct {
 	conn         connection
 	weight       float64
 	cache        float64
-	collectFunc  func() []float64
+	collectFunc  func() Vector
 	callbackFunc func(value float64)
 }
 

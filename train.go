@@ -2,8 +2,8 @@ package varis
 
 // Dataset - simple structure for store input and expected values.
 type Dataset []struct {
-	Input    []float64
-	Expected []float64
+	Input    Vector
+	Expected Vector
 }
 
 // BackPropagation train NN by input dataset for 'times' times.

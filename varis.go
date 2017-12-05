@@ -10,6 +10,8 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
+type Vector []float64
+
 type neuronFunction func(x float64) float64
 
 // ACTIVATION store default activation function.
