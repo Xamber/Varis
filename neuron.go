@@ -3,7 +3,6 @@ package varis
 // Standart implimentation of Neuron.
 type Neuron struct {
 	conn         connection
-	uuid         string
 	weight       float64
 	cache        float64
 	callbackFunc func(value float64)

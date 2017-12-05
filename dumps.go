@@ -43,7 +43,6 @@ func (network *Network) Dump() networkDump {
 		for _, n := range l {
 			for _, os := range n.conn.outSynapses {
 				synapseDump := synapseDump{
-					UUID:      os.uuid,
 					Weight:    os.weight,
 					InNeuron:  neuronsUUIDs[os.inNeuron],
 					OutNeuron: neuronsUUIDs[os.outNeuron],
@@ -63,23 +62,26 @@ func (load networkDump) Load() Network {
 	for index, loadLayer := range load.Neurons {
 		layer := Layer{}
 		for _, n := range loadLayer {
-			var neuron *Neuron
+			neuron := &Neuron{weight: n.Weight}
+			neuron.callbackFunc = neuron.conn.broadcastSignals
 			switch index {
 			case 0:
-				neuron = network.createInputNeuron(n.UUID, n.Weight)
+				neuron.callbackFunc = nil
 			case len(load.Neurons) - 1:
-				neuron = network.createOutputNeuron(n.UUID, n.Weight)
-			default:
-				neuron = network.createHiddenNeuron(n.UUID, n.Weight)
+				outputChan := make(chan float64)
+				neuron.callbackFunc = func(value float64) {
+					outputChan <- value
+				}
+				network.Output = append(network.Output, outputChan)
 			}
 			layer.AddNeuron(neuron)
-			cache[neuron.uuid] = neuron
+			cache[n.UUID] = neuron
 		}
 		network.AddLayer(layer)
 	}
 
 	for _, s := range load.Synapses {
-		ConnectNeurons(cache[s.InNeuron], cache[s.OutNeuron], s.UUID, s.Weight)
+		ConnectNeurons(cache[s.InNeuron], cache[s.OutNeuron], s.Weight)
 	}
 
 	network.RunNeurons()
