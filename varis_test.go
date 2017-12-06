@@ -113,3 +113,32 @@ func TestDumpToJSON(t *testing.T) {
 		t.Error("Result of neural newtwork calculating not a same ")
 	}
 }
+
+func TestModel(t *testing.T) {
+	nn := CreatePerceptron(2, 3, 1)
+
+	x1 := BooleanField{channel: nn.input[0]}
+	x2 := BooleanField{channel: nn.input[1]}
+	y := BooleanField{channel: nn.output[0]}
+
+	dataset := Dataset{
+		{Vector{0.0, 0.0}, Vector{1.0}},
+		{Vector{1.0, 0.0}, Vector{0.0}},
+		{Vector{0.0, 1.0}, Vector{0.0}},
+		{Vector{1.0, 1.0}, Vector{1.0}},
+	}
+
+	BackPropagation(&nn, dataset, 10000)
+
+	run := func(left bool, right bool) bool {
+		x1.Handle(left)
+		x2.Handle(right)
+
+		return y.Recieve()
+	}
+
+	if run(true, true) != true {
+		t.Error("Result of model is wrong")
+	}
+
+}
