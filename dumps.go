@@ -105,9 +105,7 @@ func ToJSON(network Perceptron) string {
 
 func FromJSON(jsonString string) Perceptron {
 	var load NetworkDump
-
 	json.Unmarshal([]byte(jsonString), &load)
 	network := load.Load()
-
 	return network
 }

@@ -48,10 +48,6 @@ func CreateNeuron(neuronType int, weight float64) (*Neuron, chan float64) {
 	return neuron, channel
 }
 
-func (n *Neuron) deactivation() float64 {
-	return DEACTIVATION(n.cache)
-}
-
 func (n *Neuron) changeWeight(neuronDelta float64) {
 	n.weight += neuronDelta
 	n.conn.changeWeight(neuronDelta)
