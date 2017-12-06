@@ -19,7 +19,7 @@ type Neuron struct {
 func CreateNeuron(neuronType int, weight float64) (*Neuron, chan float64) {
 
 	var neuron = &Neuron{weight: weight}
-	var channel = make(chan float64)
+	var channel chan float64
 
 	neuron.callbackFunc = neuron.conn.broadcastSignals
 	neuron.collectFunc = neuron.conn.collectSignals
