@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="example/gopher.jpg" height="200" alt="Gopher from internet =)" title="Gopher from internet =" />
+    <img src="examples/gopher.jpg" height="200" alt="Gopher from internet =)" title="Gopher from internet =" />
 </p>
 
 # Varis
