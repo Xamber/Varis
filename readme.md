@@ -4,6 +4,7 @@
 
 # Varis
 Neural Networks with GO
+[![Go Report Card](https://goreportcard.com/badge/github.com/Xamber/Varis)](https://goreportcard.com/report/github.com/Xamber/Varis)
 
 ## Disclaimer
 Some time ago I decided to learn Go language and neural networks.
