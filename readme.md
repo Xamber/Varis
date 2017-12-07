@@ -6,6 +6,7 @@
 Neural Networks with GO
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/Xamber/Varis)](https://goreportcard.com/report/github.com/Xamber/Varis)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/xamber/Varis/blob/master/LICENSE.md)
 
 ## Disclaimer
 Some time ago I decided to learn Go language and neural networks.
