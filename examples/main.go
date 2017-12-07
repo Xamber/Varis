@@ -21,4 +21,21 @@ func main() {
 	n.Calculate(varis.Vector{1.0, 0.0})
 	n.Calculate(varis.Vector{0.0, 1.0})
 	n.Calculate(varis.Vector{1.0, 1.0})
+
+	// Model example section
+	type Model struct {
+		Network *varis.Perceptron
+		X1      varis.BooleanField `direction:"input"`
+		X2      varis.BooleanField `direction:"input"`
+		O       varis.BooleanField `direction:"output"`
+	}
+
+	f := Model{Network: &n}
+
+	calculate := varis.GenerateRunFunction(f)
+
+	calculate([]interface{}{false, false})
+	calculate([]interface{}{true, false})
+	calculate([]interface{}{false, true})
+	calculate([]interface{}{true, true})
 }

@@ -6,6 +6,7 @@ import (
 	"reflect"
 )
 
+type Values []interface{}
 type ModelFunction func([]interface{}) []interface{}
 type Field interface {
 	toSignal(input interface{}) float64
@@ -117,12 +118,14 @@ func main() {
 
 	varis.BackPropagation(&n, dataset, 10000)
 
-	f := &Model{
-		Network: &n,
-		X1:      BooleanField{},
-		X2:      BooleanField{},
-		O:       BooleanField{},
+	type Model struct {
+		Network *varis.Perceptron
+		X1      BooleanField `direction:"input"`
+		X2      BooleanField `direction:"input"`
+		O       BooleanField `direction:"output"`
 	}
+
+	f := Model{Network: &n}
 
 	calculate := GenerateRunFunction(f)
 	output := calculate([]interface{}{true, "sdfsdf"})
