@@ -4,6 +4,7 @@ import (
 	"sync"
 )
 
+// Vector implement array of float64
 type Vector []float64
 
 func (v Vector) sum() (result float64) {
@@ -13,7 +14,8 @@ func (v Vector) sum() (result float64) {
 	return result
 }
 
-func (v Vector) Broadcast(channels []chan float64) {
+// broadcast send all values to each of channels of channels array
+func (v Vector) broadcast(channels []chan float64) {
 	if len(v) != len(channels) {
 		panic("Length not equal")
 	}
@@ -23,7 +25,8 @@ func (v Vector) Broadcast(channels []chan float64) {
 	}
 }
 
-func CollectVector(channels []chan float64) (vector Vector) {
+// collectVector get all values from each of channels of channels array
+func collectVector(channels []chan float64) (vector Vector) {
 	count := len(channels)
 	vector = make(Vector, count)
 

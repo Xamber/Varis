@@ -18,8 +18,8 @@ func (n *Perceptron) Calculate(input Vector) Vector {
 		panic("Check count of input value")
 	}
 
-	input.Broadcast(n.input)
-	output := CollectVector(n.output)
+	input.broadcast(n.input)
+	output := collectVector(n.output)
 
 	if PrintCalculation == true {
 		fmt.Printf("Input: %v Output: %v\n", input, output)

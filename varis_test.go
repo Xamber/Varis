@@ -22,7 +22,7 @@ func TestVectorZeroSum(t *testing.T) {
 }
 
 func TestGenerateUUID(t *testing.T) {
-	uuid := generate_uuid()
+	uuid := generateUUID()
 	if len(uuid) != 36 {
 		t.Error("Len of uuid not a same:", len(uuid))
 	}

@@ -2,23 +2,9 @@ package varis
 
 import "sync"
 
-type synapse struct {
-	weight    float64
-	in        chan float64
-	out       chan float64
-	cache     float64
-	inNeuron  *Neuron
-	outNeuron *Neuron
-}
-
-func (syn *synapse) live() {
-	for {
-		syn.cache = <-syn.in
-		outputValue := syn.cache * syn.weight
-		syn.out <- outputValue
-	}
-}
-
+// ConnectNeurons connect two neurons.
+// It creates synapse and add connection to input and output Neuron.
+// Have weight.
 func ConnectNeurons(in *Neuron, out *Neuron, weight float64) {
 	syn := &synapse{
 		weight:    weight,
@@ -32,6 +18,24 @@ func ConnectNeurons(in *Neuron, out *Neuron, weight float64) {
 	out.conn.addInputSynapse(syn)
 
 	go syn.live()
+}
+
+type synapse struct {
+	weight    float64
+	in        chan float64
+	out       chan float64
+	cache     float64
+	inNeuron  *Neuron
+	outNeuron *Neuron
+}
+
+// ConnectNeurons live is function for goroutine.
+func (syn *synapse) live() {
+	for {
+		syn.cache = <-syn.in
+		outputValue := syn.cache * syn.weight
+		syn.out <- outputValue
+	}
 }
 
 type connection struct {

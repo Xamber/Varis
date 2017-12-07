@@ -4,17 +4,20 @@ import (
 	"reflect"
 )
 
-type Values []interface{}
-type ModelFunction func([]interface{}) []interface{}
-type Field interface {
+// ModelFunction type of calculate model function
+type ModelFunction func(values) values
+
+type values []interface{}
+
+type field interface {
 	toSignal(input interface{}) float64
 	fromSignal(signal float64) interface{}
 }
 
+// BooleanField implement bool type of Model field.
 type BooleanField struct{}
 
 func (f BooleanField) toSignal(input interface{}) float64 {
-
 	value, ok := input.(bool)
 	if !ok {
 		panic("Value of BooleanField is not bool")
@@ -22,33 +25,25 @@ func (f BooleanField) toSignal(input interface{}) float64 {
 
 	if value == true {
 		return 1.00
-	} else {
-		return 0.00
 	}
+	return 0.00
 }
 
 func (f BooleanField) fromSignal(signal float64) interface{} {
 	if signal >= 0.5 {
 		return true
-	} else {
-		return false
 	}
+	return false
 }
 
-type IntegerField struct {
-	min int64
-	max int64
-}
-
-type ArrayField struct{}
-
+// GenerateRunFunction generate RunFunction from model.
 func GenerateRunFunction(f interface{}) ModelFunction {
 	model := reflect.ValueOf(f)
 
 	var network *Perceptron
 
-	inputs := []Field{}
-	output := []Field{}
+	inputs := []field{}
+	output := []field{}
 
 	for i := 0; i < model.NumField(); i++ {
 		field := model.Field(i)
@@ -56,7 +51,7 @@ func GenerateRunFunction(f interface{}) ModelFunction {
 
 		direction := typeField.Tag.Get("direction")
 
-		modelField, isField := field.Interface().(Field)
+		modelField, isField := field.Interface().(field)
 		if isField && direction == "input" {
 			inputs = append(inputs, modelField)
 		}
@@ -70,10 +65,10 @@ func GenerateRunFunction(f interface{}) ModelFunction {
 		}
 	}
 
-	var run ModelFunction = func(input []interface{}) []interface{} {
+	var run ModelFunction = func(input values) values {
 
 		in := Vector{}
-		out := []interface{}{}
+		out := values{}
 
 		for i, v := range input {
 			in = append(in, inputs[i].toSignal(v))

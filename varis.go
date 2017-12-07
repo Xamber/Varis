@@ -10,8 +10,8 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
+// PrintCalculation logs all calculate calls (print input and output).
 var PrintCalculation = false
-var PrintTrainLog = false
 
 type neuronFunction func(x float64) float64
 

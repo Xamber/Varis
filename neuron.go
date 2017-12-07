@@ -1,12 +1,15 @@
 package varis
 
+// Neuron type Enum
 const (
 	InputNeuron = iota
 	HiddenNeuron
 	OutputNeuron
 )
 
-// Standart implementation of Neuron.
+// Neuron - entity with float64 weight (it is bias) and cache.
+// Neuron have live method, which ran collectFunc, activationFunc and callbackFunc.
+// Activation result store in cache for training.
 type Neuron struct {
 	conn           connection
 	weight         float64
@@ -16,6 +19,9 @@ type Neuron struct {
 	callbackFunc   func(value float64)
 }
 
+// CreateNeuron - create Neuron by type.
+// It creates all function for live method in set its to Neuron.
+// If Neuron have input or output channel - CreateNeuron return channel.
 func CreateNeuron(neuronType int, weight float64) (*Neuron, chan float64) {
 
 	var neuron = &Neuron{weight: weight}
@@ -48,11 +54,13 @@ func CreateNeuron(neuronType int, weight float64) (*Neuron, chan float64) {
 	return neuron, channel
 }
 
+// changeWeight - change weight of Neuron and change weight for all related synapses.
 func (n *Neuron) changeWeight(neuronDelta float64) {
 	n.weight += neuronDelta
 	n.conn.changeWeight(neuronDelta)
 }
 
+// live - method for goroutine.
 func (n *Neuron) live() {
 
 	if n.activationFunc == nil && n.callbackFunc == nil {
