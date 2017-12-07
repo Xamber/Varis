@@ -15,7 +15,7 @@ func (v Vector) sum() (result float64) {
 
 func (v Vector) Broadcast(channels []chan float64) {
 	if len(v) != len(channels) {
-		panic("Lenght not equal")
+		panic("Length not equal")
 	}
 
 	for i, c := range channels {

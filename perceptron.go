@@ -5,7 +5,7 @@ import (
 	"math/rand"
 )
 
-// Perceptron impliment Neural Perceptron by collect layers with Neurons, output channel for store signals from output Layer.
+// Perceptron implement Neural Perceptron by collect layers with Neurons, output channel for store signals from output Layer.
 type Perceptron struct {
 	layers [][]*Neuron
 	input  []chan float64

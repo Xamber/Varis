@@ -6,7 +6,7 @@ const (
 	OutputNeuron
 )
 
-// Standart implimentation of Neuron.
+// Standart implementation of Neuron.
 type Neuron struct {
 	conn           connection
 	weight         float64
