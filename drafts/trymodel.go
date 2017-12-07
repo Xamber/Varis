@@ -53,6 +53,8 @@ type Model struct {
 func GenerateRunFunction(f interface{}) ModelFunction {
 	model := reflect.ValueOf(f).Elem()
 
+	var network *varis.Perceptron
+
 	inputs := []Field{}
 	output := []Field{}
 
@@ -70,9 +72,9 @@ func GenerateRunFunction(f interface{}) ModelFunction {
 			output = append(output, modelField)
 		}
 
-		boolF, ok := field.Interface().(BooleanField)
+		nn, ok := field.Interface().(*varis.Perceptron)
 		if ok {
-			fmt.Println(boolF)
+			network = nn
 		}
 
 		fmt.Printf("%s:\tValue: %v\t Direction: %s\n", typeField.Name, field.Interface(), direction)
@@ -82,7 +84,20 @@ func GenerateRunFunction(f interface{}) ModelFunction {
 
 	var run ModelFunction = func(input []interface{}) []interface{} {
 
-		return []interface{}{}
+		in := varis.Vector{}
+		out := []interface{}{}
+
+		for i, v := range input {
+			in = append(in, inputs[i].toSignal(v))
+		}
+
+		output := network.Calculate(in)
+
+		for i, v := range output {
+			out = append(out, inputs[i].fromSignal(v))
+		}
+
+		return out
 	}
 
 	return run
@@ -93,6 +108,15 @@ func main() {
 
 	n := varis.CreatePerceptron(2, 3, 1)
 
+	dataset := varis.Dataset{
+		{varis.Vector{0.0, 0.0}, varis.Vector{1.0}},
+		{varis.Vector{1.0, 0.0}, varis.Vector{0.0}},
+		{varis.Vector{0.0, 1.0}, varis.Vector{0.0}},
+		{varis.Vector{1.0, 1.0}, varis.Vector{1.0}},
+	}
+
+	varis.BackPropagation(&n, dataset, 10000)
+
 	f := &Model{
 		Network: &n,
 		X1:      BooleanField{},
@@ -100,6 +124,8 @@ func main() {
 		O:       BooleanField{},
 	}
 
-	GenerateRunFunction(f)
+	calculate := GenerateRunFunction(f)
+	output := calculate([]interface{}{true, "sdfsdf"})
+	fmt.Println(output[0])
 	//run := GenerateRunFunction(f)
 }
