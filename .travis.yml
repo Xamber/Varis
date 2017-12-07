@@ -5,4 +5,8 @@ go:
   - 1.7
   - 1.8
 
-script: go test .
+script:
+  - go test -race -coverprofile=coverage.txt -covermode=atomic
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -t 7cd51863-4b8f-4d69-be34-158f3364c49b
