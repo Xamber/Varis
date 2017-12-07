@@ -115,11 +115,7 @@ func TestDumpToJSON(t *testing.T) {
 }
 
 func TestModel(t *testing.T) {
-	nn := CreatePerceptron(2, 3, 1)
-
-	x1 := BooleanField{channel: nn.input[0]}
-	x2 := BooleanField{channel: nn.input[1]}
-	y := BooleanField{channel: nn.output[0]}
+	n := CreatePerceptron(2, 3, 1)
 
 	dataset := Dataset{
 		{Vector{0.0, 0.0}, Vector{1.0}},
@@ -128,17 +124,29 @@ func TestModel(t *testing.T) {
 		{Vector{1.0, 1.0}, Vector{1.0}},
 	}
 
-	BackPropagation(&nn, dataset, 10000)
+	BackPropagation(&n, dataset, 10000)
+	PrintCalculation = true
 
-	run := func(left bool, right bool) bool {
-		x1.Handle(left)
-		x2.Handle(right)
+	n.Calculate(Vector{0.0, 0.0})
+	n.Calculate(Vector{1.0, 0.0})
+	n.Calculate(Vector{0.0, 1.0})
+	n.Calculate(Vector{1.0, 1.0})
 
-		return y.Recieve()
+	// Model example section
+	type Model struct {
+		Network *Perceptron
+		X1      BooleanField `direction:"input"`
+		X2      BooleanField `direction:"input"`
+		O       BooleanField `direction:"output"`
 	}
 
-	if run(true, true) != true {
-		t.Error("Result of model is wrong")
-	}
+	f := Model{Network: &n}
+
+	calculate := GenerateRunFunction(f)
+
+	calculate([]interface{}{false, false})
+	calculate([]interface{}{true, false})
+	calculate([]interface{}{false, true})
+	calculate([]interface{}{true, true})
 
 }

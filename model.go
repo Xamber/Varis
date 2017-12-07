@@ -9,7 +9,8 @@ type ModelFunction func(values) values
 
 type values []interface{}
 
-type field interface {
+// Field store two methods: toSignal and fromSignal for convert values to signals
+type Field interface {
 	toSignal(input interface{}) float64
 	fromSignal(signal float64) interface{}
 }
@@ -42,8 +43,8 @@ func GenerateRunFunction(f interface{}) ModelFunction {
 
 	var network *Perceptron
 
-	inputs := []field{}
-	output := []field{}
+	inputs := []Field{}
+	output := []Field{}
 
 	for i := 0; i < model.NumField(); i++ {
 		field := model.Field(i)
@@ -51,7 +52,7 @@ func GenerateRunFunction(f interface{}) ModelFunction {
 
 		direction := typeField.Tag.Get("direction")
 
-		modelField, isField := field.Interface().(field)
+		modelField, isField := field.Interface().(Field)
 		if isField && direction == "input" {
 			inputs = append(inputs, modelField)
 		}
