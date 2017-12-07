@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="example/gopher.jpg" height="200" alt="Gopher from internet =)" title="Gopher from internet =" />
+</p>
+
 # Varis
 Neural Networks with GO
 
