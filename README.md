@@ -74,11 +74,8 @@ func main() {
 
 ```
 ## Roadmap
-- Improve project structure.
 - Add error return to functions.
 - Create more tests and benchmarks.
-- Create normal documentation.
 - Implement Models (Normalize data from bool, integer, array etc.)
-- Create signal and weight types.
 
 
