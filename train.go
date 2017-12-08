@@ -1,22 +1,29 @@
 package varis
 
-// Dataset - simple type for store input and expected values.
+// Dataset - simple type for store input and expected Vectors.
 type Dataset [][2]Vector
 
-// BackPropagation train NN by input dataset for 'times' times.
-func BackPropagation(network *Perceptron, dataset Dataset, times int) {
+// PerceptronTrainer is a trainer for Perceptron networks
+type PerceptronTrainer struct {
+	Network *Perceptron
+	Dataset Dataset
+}
+
+// BackPropagation train Network input Dataset for 'times' times.
+func (t *PerceptronTrainer) BackPropagation(times int) {
 	var neuronDelta float64
-	var lastLayerIndex = len(network.layers) - 1
 
 	for iteration := 0; iteration < times; iteration++ {
-		for _, frame := range dataset {
-			results := network.Calculate(frame[0])
+		for _, frame := range t.Dataset {
+			expected := frame[1]
+			results := t.Network.Calculate(frame[0])
+
 			layerDelta := 0.0
-			for l := lastLayerIndex; l > 0; l-- {
+			for l := len(t.Network.layers) - 1; l > 0; l-- {
 				nextLayerDelta := 0.00
-				for i, n := range network.layers[l] {
-					if l == lastLayerIndex {
-						neuronDelta = (frame[1][i] - results[i]) * DEACTIVATION(n.getCore().cache)
+				for i, n := range t.Network.layers[l] {
+					if l == len(t.Network.layers)-1 {
+						neuronDelta = (expected[i] - results[i]) * DEACTIVATION(n.getCore().cache)
 					} else {
 						neuronDelta = layerDelta * DEACTIVATION(n.getCore().cache)
 					}

@@ -12,7 +12,7 @@ type Perceptron struct {
 	output []chan float64
 }
 
-// Calculate run network calculations by wait signals from input channels and send signals to output array of chan.
+// Calculate run Network calculations by wait signals from input channels and send signals to output array of chan.
 func (n *Perceptron) Calculate(input Vector) Vector {
 	if len(input) != len(n.layers[0]) {
 		panic("Check count of input value")

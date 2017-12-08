@@ -14,7 +14,9 @@ func main() {
 		{varis.Vector{1.0, 1.0}, varis.Vector{1.0}},
 	}
 
-	varis.BackPropagation(&n, dataset, 10000)
+	trainer := varis.PerceptronTrainer{&n, dataset}
+	trainer.BackPropagation(10000)
+
 	varis.PrintCalculation = true
 
 	n.Calculate(varis.Vector{0.0, 0.0})
