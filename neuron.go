@@ -1,77 +1,96 @@
 package varis
 
-// Neuron type Enum
-const (
-	InputNeuron = iota
-	HiddenNeuron
-	OutputNeuron
-)
+type Neuron interface {
+	live()
 
-// Neuron - entity with float64 weight (it is bias) and cache.
-// Neuron have live method, which ran collectFunc, activationFunc and callbackFunc.
+	getConnection() *connection
+	getWeight() float64
+	getCache() float64
+
+	changeWeight(neuronDelta float64)
+}
+
+// CoreNeuron - entity with float64 weight (it is bias) and cache.
 // Activation result store in cache for training.
-type Neuron struct {
-	conn           connection
-	weight         float64
-	cache          float64
-	collectFunc    func() Vector
-	activationFunc func(vector Vector) float64
-	callbackFunc   func(value float64)
+type CoreNeuron struct {
+	conn   connection
+	weight float64
+	cache  float64
 }
 
-// CreateNeuron - create Neuron by type.
-// It creates all function for live method in set its to Neuron.
-// If Neuron have input or output channel - CreateNeuron return channel.
-func CreateNeuron(neuronType int, weight float64) (*Neuron, chan float64) {
-
-	var neuron = &Neuron{weight: weight}
-	var channel chan float64
-
-	neuron.callbackFunc = neuron.conn.broadcastSignals
-	neuron.collectFunc = neuron.conn.collectSignals
-	neuron.activationFunc = func(vector Vector) float64 {
-		neuron.cache = vector.sum() + neuron.weight
-		return ACTIVATION(neuron.cache)
-	}
-
-	switch neuronType {
-	case InputNeuron:
-		channel = make(chan float64)
-		neuron.activationFunc = func(vector Vector) float64 {
-			return vector.sum()
-		}
-		neuron.collectFunc = func() Vector {
-			return Vector{<-channel}
-		}
-	case HiddenNeuron:
-		channel = nil
-	case OutputNeuron:
-		channel = make(chan float64)
-		neuron.callbackFunc = func(value float64) {
-			channel <- value
-		}
-	}
-	return neuron, channel
-}
-
-// changeWeight - change weight of Neuron and change weight for all related synapses.
-func (n *Neuron) changeWeight(neuronDelta float64) {
+// changeWeight - change weight of CoreNeuron and change weight for all related synapses.
+func (n *CoreNeuron) changeWeight(neuronDelta float64) {
 	n.weight += neuronDelta
 	n.conn.changeWeight(neuronDelta)
 }
 
-// live - method for goroutine.
-func (n *Neuron) live() {
+// getWeight - get weight from CoreNeuron
+func (n *CoreNeuron) getWeight() float64 {
+	return n.weight
+}
 
-	if n.activationFunc == nil && n.callbackFunc == nil {
-		panic("Neuron do nothing")
+// getWeight - get weight from CoreNeuron
+func (n *CoreNeuron) getConnection() *connection {
+	return &n.conn
+}
+
+// getCache - get cache from CoreNeuron
+func (n *CoreNeuron) getCache() float64 {
+	return n.cache
+}
+
+type inputNeuron struct {
+	CoreNeuron
+	connectTo chan float64
+}
+
+func INeuron(weight float64, connectTo chan float64) Neuron {
+	return &inputNeuron{
+		CoreNeuron: CoreNeuron{weight: weight},
+		connectTo:  connectTo,
 	}
+}
 
-	if n.collectFunc == nil {
-		return
-	}
-
+func (neuron *inputNeuron) live() {
 	for {
-		n.callbackFunc(n.activationFunc(n.collectFunc()))
+		neuron.conn.broadcastSignals(<-neuron.connectTo)
+	}
+}
+
+type hiddenNeuron struct {
+	CoreNeuron
+}
+
+func HNeuron(weight float64) Neuron {
+	return &hiddenNeuron{
+		CoreNeuron: CoreNeuron{weight: weight},
+	}
+}
+
+func (neuron *hiddenNeuron) live() {
+	for {
+		vector := neuron.conn.collectSignals()
+		neuron.cache = vector.sum() + neuron.weight
+		neuron.conn.broadcastSignals(ACTIVATION(neuron.cache))
+	}
+}
+
+type outputNeuron struct {
+	CoreNeuron
+	connectTo chan float64
+}
+
+func ONeuron(weight float64, connectTo chan float64) Neuron {
+	return &outputNeuron{
+		CoreNeuron: CoreNeuron{weight: weight},
+		connectTo:  connectTo,
+	}
+}
+
+func (neuron *outputNeuron) live() {
+	for {
+		vector := neuron.conn.collectSignals()
+		neuron.cache = vector.sum() + neuron.weight
+		neuron.connectTo <- ACTIVATION(neuron.cache)
 	}
 }

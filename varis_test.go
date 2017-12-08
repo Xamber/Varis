@@ -102,7 +102,7 @@ func TestDumpToJSON(t *testing.T) {
 	}
 
 	if n1.Calculate(Vector{1.0, 0.0})[0] != n2.Calculate(Vector{1.0, 0.0})[0] {
-		t.Error("Result of neural newtwork calculating not a same ")
+		t.Error("Result of neural newtwork calculating not a same")
 	}
 
 	if n1.Calculate(Vector{0.0, 1.0})[0] != n2.Calculate(Vector{0.0, 1.0})[0] {

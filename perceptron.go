@@ -7,7 +7,7 @@ import (
 
 // Perceptron implement Neural Perceptron by collect layers with Neurons, output channel for store signals from output Layer.
 type Perceptron struct {
-	layers [][]*Neuron
+	layers [][]Neuron
 	input  []chan float64
 	output []chan float64
 }
@@ -28,7 +28,7 @@ func (n *Perceptron) Calculate(input Vector) Vector {
 	return output
 }
 
-// RunNeurons create goroutine for all Neuron in Perceptron.
+// RunNeurons create goroutine for all CoreNeuron in Perceptron.
 func (n *Perceptron) RunNeurons() {
 	for _, l := range n.layers {
 		for _, neuron := range l {
@@ -58,21 +58,20 @@ func CreatePerceptron(layers ...int) Perceptron {
 	network.output = make([]chan float64, 0)
 
 	for index, neurons := range layers {
-		layer := []*Neuron{}
+		layer := []Neuron{}
 		for i := 0; i < neurons; i++ {
-
-			var neuron *Neuron
-			var channel chan float64
-
+			var neuron Neuron
 			switch index {
 			case 0:
-				neuron, channel = CreateNeuron(InputNeuron, rand.Float64())
+				channel := make(chan float64)
+				neuron = INeuron(rand.Float64(), channel)
 				network.input = append(network.input, channel)
 			case len(layers) - 1:
-				neuron, channel = CreateNeuron(OutputNeuron, rand.Float64())
+				channel := make(chan float64)
+				neuron = ONeuron(rand.Float64(), channel)
 				network.output = append(network.output, channel)
 			default:
-				neuron, _ = CreateNeuron(HiddenNeuron, rand.Float64())
+				neuron = HNeuron(rand.Float64())
 			}
 
 			layer = append(layer, neuron)

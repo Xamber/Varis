@@ -3,9 +3,9 @@ package varis
 import "sync"
 
 // ConnectNeurons connect two neurons.
-// It creates synapse and add connection to input and output Neuron.
+// It creates synapse and add connection to input and output CoreNeuron.
 // Have weight.
-func ConnectNeurons(in *Neuron, out *Neuron, weight float64) {
+func ConnectNeurons(in Neuron, out Neuron, weight float64) {
 	syn := &synapse{
 		weight:    weight,
 		in:        make(chan float64),
@@ -14,8 +14,8 @@ func ConnectNeurons(in *Neuron, out *Neuron, weight float64) {
 		outNeuron: out,
 	}
 
-	in.conn.addOutputSynapse(syn)
-	out.conn.addInputSynapse(syn)
+	in.getConnection().addOutputSynapse(syn)
+	out.getConnection().addInputSynapse(syn)
 
 	go syn.live()
 }
@@ -25,8 +25,8 @@ type synapse struct {
 	in        chan float64
 	out       chan float64
 	cache     float64
-	inNeuron  *Neuron
-	outNeuron *Neuron
+	inNeuron  Neuron
+	outNeuron Neuron
 }
 
 // ConnectNeurons live is function for goroutine.

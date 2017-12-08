@@ -6,7 +6,6 @@ type Dataset [][2]Vector
 // BackPropagation train NN by input dataset for 'times' times.
 func BackPropagation(network *Perceptron, dataset Dataset, times int) {
 	var neuronDelta float64
-
 	var lastLayerIndex = len(network.layers) - 1
 
 	for iteration := 0; iteration < times; iteration++ {
@@ -17,9 +16,9 @@ func BackPropagation(network *Perceptron, dataset Dataset, times int) {
 				nextLayerDelta := 0.00
 				for i, n := range network.layers[l] {
 					if l == lastLayerIndex {
-						neuronDelta = (frame[1][i] - results[i]) * DEACTIVATION(n.cache)
+						neuronDelta = (frame[1][i] - results[i]) * DEACTIVATION(n.getCache())
 					} else {
-						neuronDelta = layerDelta * DEACTIVATION(n.cache)
+						neuronDelta = layerDelta * DEACTIVATION(n.getCache())
 					}
 					neuronDelta *= float64(1)
 					nextLayerDelta += neuronDelta

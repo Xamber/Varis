@@ -36,7 +36,7 @@ type synapseDump struct {
 func (network *Perceptron) Dump() NetworkDump {
 	dump := NetworkDump{}
 
-	neuronsUUIDs := make(map[*Neuron]string)
+	neuronsUUIDs := make(map[Neuron]string)
 
 	for _, l := range network.layers {
 		layerDump := []neuronDump{}
@@ -44,14 +44,14 @@ func (network *Perceptron) Dump() NetworkDump {
 			uuid := generateUUID()
 			neuronsUUIDs[n] = uuid
 
-			neuronDump := neuronDump{uuid, n.weight}
+			neuronDump := neuronDump{uuid, n.getWeight()}
 			layerDump = append(layerDump, neuronDump)
 		}
 		dump.Neurons = append(dump.Neurons, layerDump)
 	}
 	for _, l := range network.layers {
 		for _, n := range l {
-			for _, os := range n.conn.outSynapses {
+			for _, os := range n.getConnection().outSynapses {
 				synapseDump := synapseDump{
 					Weight:    os.weight,
 					InNeuron:  neuronsUUIDs[os.inNeuron],
@@ -67,24 +67,28 @@ func (network *Perceptron) Dump() NetworkDump {
 
 // Load transform NetworkDump to Perceptron.
 func (load NetworkDump) Load() Perceptron {
-	cache := make(map[string]*Neuron)
+	cache := make(map[string]Neuron)
 
-	network := Perceptron{output: make([]chan float64, 0)}
+	network := Perceptron{}
+	network.input = make([]chan float64, 0)
+	network.output = make([]chan float64, 0)
+
 	for index, loadLayer := range load.Neurons {
-		layer := []*Neuron{}
+		layer := []Neuron{}
 		for _, n := range loadLayer {
-			var neuron *Neuron
-			var channel chan float64
+			var neuron Neuron
 
 			switch index {
 			case 0:
-				neuron, channel = CreateNeuron(InputNeuron, n.Weight)
+				channel := make(chan float64)
+				neuron = INeuron(n.Weight, channel)
 				network.input = append(network.input, channel)
 			case len(load.Neurons) - 1:
-				neuron, channel = CreateNeuron(OutputNeuron, n.Weight)
+				channel := make(chan float64)
+				neuron = ONeuron(n.Weight, channel)
 				network.output = append(network.output, channel)
 			default:
-				neuron, _ = CreateNeuron(HiddenNeuron, n.Weight)
+				neuron = HNeuron(n.Weight)
 			}
 			layer = append(layer, neuron)
 			cache[n.UUID] = neuron
