@@ -14,108 +14,89 @@ func generateUUID() string {
 	return uuid
 }
 
-// NetworkDump implement dump of Perceptron.
-type NetworkDump struct {
-	Neurons  [][]neuronDump
-	Synapses []synapseDump
-}
+// ToJSON dump and transform Perceptron to json string.
+func ToJSON(network Perceptron) string {
+	networkDump := make(map[string][]interface{})
 
-type neuronDump struct {
-	UUID   string
-	Weight float64
-}
+	networkDump["Layers"] = []interface{}{}
+	networkDump["Synapses"] = []interface{}{}
 
-type synapseDump struct {
-	UUID      string
-	Weight    float64
-	InNeuron  string
-	OutNeuron string
-}
-
-// Dump transform Perceptron to NetworkDump.
-func (network *Perceptron) Dump() NetworkDump {
-	dump := NetworkDump{}
-
-	neuronsUUIDs := make(map[Neuron]string)
+	cache := make(map[Neuron]string)
 
 	for _, l := range network.layers {
-		layerDump := []neuronDump{}
+		layerDump := []interface{}{}
 		for _, n := range l {
 			uuid := generateUUID()
-			neuronsUUIDs[n] = uuid
-
-			neuronDump := neuronDump{uuid, n.getCore().weight}
-			layerDump = append(layerDump, neuronDump)
+			cache[n] = uuid
+			layerDump = append(layerDump, map[string]float64{uuid: n.getCore().weight})
 		}
-		dump.Neurons = append(dump.Neurons, layerDump)
+		networkDump["Layers"] = append(networkDump["Layers"], layerDump)
 	}
 	for _, l := range network.layers {
 		for _, n := range l {
 			for _, os := range n.getCore().conn.outSynapses {
-				synapseDump := synapseDump{
-					Weight:    os.weight,
-					InNeuron:  neuronsUUIDs[os.inNeuron],
-					OutNeuron: neuronsUUIDs[os.outNeuron],
+				synapseDump := map[string]interface{}{
+					"in":     cache[os.inNeuron],
+					"out":    cache[os.outNeuron],
+					"weight": os.weight,
 				}
-				dump.Synapses = append(dump.Synapses, synapseDump)
+				networkDump["Synapses"] = append(networkDump["Synapses"], synapseDump)
 			}
 		}
 	}
 
-	return dump
+	jsonNetwork, _ := json.Marshal(networkDump)
+	return string(jsonNetwork)
 }
 
-// Load transform NetworkDump to Perceptron.
-func (load NetworkDump) Load() Perceptron {
-	cache := make(map[string]Neuron)
+// FromJSON load json string and create Perceptron.
+func FromJSON(jsonString string) Perceptron {
+	networkLoad := make(map[string][]interface{})
+
+	json.Unmarshal([]byte(jsonString), &networkLoad)
 
 	network := Perceptron{}
 	network.input = make([]chan float64, 0)
 	network.output = make([]chan float64, 0)
 
-	for index, loadLayer := range load.Neurons {
-		layer := []Neuron{}
-		for _, n := range loadLayer {
-			var neuron Neuron
+	cache := make(map[string]Neuron)
 
-			switch index {
-			case 0:
-				channel := make(chan float64)
-				neuron = INeuron(n.Weight, channel)
-				network.input = append(network.input, channel)
-			case len(load.Neurons) - 1:
-				channel := make(chan float64)
-				neuron = ONeuron(n.Weight, channel)
-				network.output = append(network.output, channel)
-			default:
-				neuron = HNeuron(n.Weight)
+	for index, loadLayer := range networkLoad["Layers"] {
+		layer := []Neuron{}
+		normalizeLayer := loadLayer.([]interface{})
+		for _, loadNeuron := range normalizeLayer {
+			var neuron Neuron
+			normalizedNeuron := loadNeuron.(map[string]interface{})
+			for uuid, value := range normalizedNeuron {
+				weight := value.(float64)
+				switch index {
+				case 0:
+					channel := make(chan float64)
+					neuron = INeuron(weight, channel)
+					network.input = append(network.input, channel)
+				case len(networkLoad["Layers"]) - 1:
+					channel := make(chan float64)
+					neuron = ONeuron(weight, channel)
+					network.output = append(network.output, channel)
+				default:
+					neuron = HNeuron(weight)
+				}
+				layer = append(layer, neuron)
+				cache[uuid] = neuron
 			}
-			layer = append(layer, neuron)
-			cache[n.UUID] = neuron
 		}
 		network.layers = append(network.layers, layer)
 	}
 
-	for _, s := range load.Synapses {
-		ConnectNeurons(cache[s.InNeuron], cache[s.OutNeuron], s.Weight)
+	for _, s := range networkLoad["Synapses"] {
+		normalizedSynapse := s.(map[string]interface{})
+		inNeuronUUID := normalizedSynapse["in"].(string)
+		outNeuronUUID := normalizedSynapse["out"].(string)
+		weight := normalizedSynapse["weight"].(float64)
+		ConnectNeurons(cache[inNeuronUUID], cache[outNeuronUUID], weight)
 	}
 
 	network.RunNeurons()
 
-	return network
-}
-
-// ToJSON dump and transform Perceptron to json string.
-func ToJSON(network Perceptron) string {
-	dump := network.Dump()
-	jsonString, _ := json.Marshal(dump)
-	return string(jsonString)
-}
-
-// FromJSON load json string and create Perceptron.
-func FromJSON(jsonString string) Perceptron {
-	var load NetworkDump
-	json.Unmarshal([]byte(jsonString), &load)
-	network := load.Load()
 	return network
 }
