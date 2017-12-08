@@ -66,4 +66,4 @@ func main() {
 - Create server and cli realization for use Varis as a application
 
 ## Alternatives
-[https://github.com/fxsjy/gonn] | [https://github.com/stevenmiller888/go-mind] | [https://github.com/made2591/go-perceptron-go]
+[gonn](https://github.com/fxsjy/gonn) | [go-mind](https://github.com/stevenmiller888/go-mind) | [go-perceptron-go](https://github.com/made2591/go-perceptron-go)
