@@ -3,7 +3,7 @@ package varis
 import "sync"
 
 // ConnectNeurons connect two neurons.
-// It creates synapse and add connection to input and output CoreNeuron.
+// It creates synapse and add connection to input and output Neuron.
 // Have weight.
 func ConnectNeurons(in Neuron, out Neuron, weight float64) {
 	syn := &synapse{
@@ -14,8 +14,8 @@ func ConnectNeurons(in Neuron, out Neuron, weight float64) {
 		outNeuron: out,
 	}
 
-	in.getConnection().addOutputSynapse(syn)
-	out.getConnection().addInputSynapse(syn)
+	in.getCore().conn.addOutputSynapse(syn)
+	out.getCore().conn.addInputSynapse(syn)
 
 	go syn.live()
 }
@@ -51,6 +51,7 @@ func (c *connection) addInputSynapse(syn *synapse) {
 	c.inSynapses = append(c.inSynapses, syn)
 }
 
+// collectSignals wait signals for all of input Synapses and return Vector with values.
 func (c *connection) collectSignals() Vector {
 	inputSignals := make(Vector, len(c.inSynapses))
 
@@ -68,12 +69,14 @@ func (c *connection) collectSignals() Vector {
 	return inputSignals
 }
 
+// broadcastSignals send signal to all output synapses.
 func (c *connection) broadcastSignals(value float64) {
 	for _, o := range c.outSynapses {
 		o.in <- value
 	}
 }
 
+// changeWeight is function for train.
 func (c *connection) changeWeight(delta float64) {
 	for _, s := range c.inSynapses {
 		s.weight += s.cache * delta

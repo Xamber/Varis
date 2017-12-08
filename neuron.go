@@ -1,16 +1,16 @@
 package varis
 
+// Neuron - interface for all Neuron
+// Each Neuron must have coreNeuron and getCore() to get pointer for CoreNeuron
+// Live method - for goroutine. All kind of Neurons implement functionality of his type
+// changeWeight is the method for training
 type Neuron interface {
 	live()
-
-	getConnection() *connection
-	getWeight() float64
-	getCache() float64
-
+	getCore() *CoreNeuron
 	changeWeight(neuronDelta float64)
 }
 
-// CoreNeuron - entity with float64 weight (it is bias) and cache.
+// CoreNeuron - entity with float64 weight (it is bias) and connection.
 // Activation result store in cache for training.
 type CoreNeuron struct {
 	conn   connection
@@ -24,19 +24,9 @@ func (n *CoreNeuron) changeWeight(neuronDelta float64) {
 	n.conn.changeWeight(neuronDelta)
 }
 
-// getWeight - get weight from CoreNeuron
-func (n *CoreNeuron) getWeight() float64 {
-	return n.weight
-}
-
-// getWeight - get weight from CoreNeuron
-func (n *CoreNeuron) getConnection() *connection {
-	return &n.conn
-}
-
-// getCache - get cache from CoreNeuron
-func (n *CoreNeuron) getCache() float64 {
-	return n.cache
+// getCore - return core of Neuron.
+func (n *CoreNeuron) getCore() *CoreNeuron {
+	return n
 }
 
 type inputNeuron struct {
@@ -44,6 +34,8 @@ type inputNeuron struct {
 	connectTo chan float64
 }
 
+// INeuron - creates inputNeuron.
+// This kind of Neuron get signal from connectTo channel and broadcast it to all output synapses without Activation.
 func INeuron(weight float64, connectTo chan float64) Neuron {
 	return &inputNeuron{
 		CoreNeuron: CoreNeuron{weight: weight},
@@ -61,6 +53,8 @@ type hiddenNeuron struct {
 	CoreNeuron
 }
 
+// HNeuron - creates hiddenNeuron.
+// This kind of Neuron get signal from input Synapses channel, activate and broadcast it to all output synapses.
 func HNeuron(weight float64) Neuron {
 	return &hiddenNeuron{
 		CoreNeuron: CoreNeuron{weight: weight},
@@ -80,6 +74,8 @@ type outputNeuron struct {
 	connectTo chan float64
 }
 
+// ONeuron - creates outputNeuron.
+// This kind of Neuron get signal from input Synapses channel, activate and send it to connectTo channel.
 func ONeuron(weight float64, connectTo chan float64) Neuron {
 	return &outputNeuron{
 		CoreNeuron: CoreNeuron{weight: weight},

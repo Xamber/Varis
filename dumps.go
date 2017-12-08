@@ -44,14 +44,14 @@ func (network *Perceptron) Dump() NetworkDump {
 			uuid := generateUUID()
 			neuronsUUIDs[n] = uuid
 
-			neuronDump := neuronDump{uuid, n.getWeight()}
+			neuronDump := neuronDump{uuid, n.getCore().weight}
 			layerDump = append(layerDump, neuronDump)
 		}
 		dump.Neurons = append(dump.Neurons, layerDump)
 	}
 	for _, l := range network.layers {
 		for _, n := range l {
-			for _, os := range n.getConnection().outSynapses {
+			for _, os := range n.getCore().conn.outSynapses {
 				synapseDump := synapseDump{
 					Weight:    os.weight,
 					InNeuron:  neuronsUUIDs[os.inNeuron],

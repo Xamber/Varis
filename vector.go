@@ -7,6 +7,7 @@ import (
 // Vector implement array of float64
 type Vector []float64
 
+// sum all element of vector
 func (v Vector) sum() (result float64) {
 	for _, i := range v {
 		result += i

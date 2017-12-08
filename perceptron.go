@@ -5,14 +5,14 @@ import (
 	"math/rand"
 )
 
-// Perceptron implement Neural Perceptron by collect layers with Neurons, output channel for store signals from output Layer.
+// Perceptron implement Neural Network Perceptron by collect layers with Neurons and input/output channels.
 type Perceptron struct {
 	layers [][]Neuron
 	input  []chan float64
 	output []chan float64
 }
 
-// Calculate run network calculations, and wait signals in output array of chan.
+// Calculate run network calculations by wait signals from input channels and send signals to output array of chan.
 func (n *Perceptron) Calculate(input Vector) Vector {
 	if len(input) != len(n.layers[0]) {
 		panic("Check count of input value")
@@ -28,7 +28,7 @@ func (n *Perceptron) Calculate(input Vector) Vector {
 	return output
 }
 
-// RunNeurons create goroutine for all CoreNeuron in Perceptron.
+// RunNeurons create goroutines for all Neuron in Perceptron.
 func (n *Perceptron) RunNeurons() {
 	for _, l := range n.layers {
 		for _, neuron := range l {
@@ -50,7 +50,7 @@ func (n *Perceptron) ConnectLayers() {
 	}
 }
 
-// CreatePerceptron make new NN with count of neurons in each Layer.
+// CreatePerceptron make new Perceptron NN with count of neurons in each Layer.
 func CreatePerceptron(layers ...int) Perceptron {
 
 	network := Perceptron{}
