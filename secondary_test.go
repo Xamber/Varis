@@ -4,24 +4,39 @@ import "testing"
 
 func TestVectorSum(t *testing.T) {
 	vector := Vector{1.1, 2.2, 3.3}
-	summa := vector.sum()
-	if summa != 6.6 {
+	if vector.sum() != 6.6 {
+		t.Error("Sums not equal")
+	}
+
+	zero := Vector{}
+	if zero.sum() != 0.0 {
 		t.Error("Sums not equal")
 	}
 }
 
-func TestVectorZeroSum(t *testing.T) {
-	vector := Vector{}
-	summa := vector.sum()
-	if summa != 0.0 {
-		t.Error("Sums not equal")
+func TestVectorEqual(t *testing.T) {
+	vector := Vector{1.1, 2.2, 3.3}
+	equal := Vector{1.1, 2.2, 3.3}
+	notEqual := Vector{5.1, 9.2, 100.3}
+	notSameLenght := Vector{5.1}
+
+	if !vector.is(equal) {
+		t.Error("Error in vector equal function")
+	}
+
+	if vector.is(notEqual) {
+		t.Error("Error in vector equal function")
+	}
+
+	if vector.is(notSameLenght) {
+		t.Error("Error in vector equal function")
 	}
 }
 
 func TestGenerateUUID(t *testing.T) {
 	uuid := generateUUID()
 	if len(uuid) != 36 {
-		t.Error("Len of uuid not a same:", len(uuid))
+		t.Error("Len of uuid not a 36:", len(uuid))
 	}
 }
 

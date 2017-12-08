@@ -44,3 +44,18 @@ func collectVector(channels []chan float64) (vector Vector) {
 	wg.Wait()
 	return vector
 }
+
+// is compate two Vectors
+func (v Vector) is(other Vector) bool {
+	if len(v) != len(other) {
+		return false
+	}
+
+	for index, value := range v {
+		if value != other[index] {
+			return false
+		}
+	}
+
+	return true
+}
