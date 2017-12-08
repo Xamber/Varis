@@ -11,19 +11,19 @@ Neural Networks with GO
 [![codecov](https://codecov.io/gh/Xamber/Varis/branch/master/graph/badge.svg)](https://codecov.io/gh/Xamber/Varis)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/xamber/Varis/blob/master/LICENSE.md)
 
-## Disclaimer
+## About Package
 Some time ago I decided to learn Go language and neural networks.
-And the best way is to do it - practice. So I use this repository to better understand the language.
-I've already encountered many pitfalls in GO, I've learned in practice many tools, data types and "chips" of the language.
-I would be happy if someone can find errors and give advice.
+So it's my variation of Neural Networks library. I tried to make library for programmers (not for mathematics).
 
+For now Varis is 0.1 version.
+
+I would be happy if someone can find errors and give advices.
 Thank you. Artem.
 
-## About package
-- No dependencies
+## Main features
 - All neurons and synapses are goroutines.
 - Golang channels for connecting neurons.
-- Neuron have callback function for redirect signal to output or any place you want.
+- No dependencies
 
 ## Installation
     go get https://github.com/Xamber/Varis
@@ -49,33 +49,21 @@ func main() {
 	varis.BackPropagation(&n, dataset, 10000)
 	varis.PrintCalculation = true
 
-	n.Calculate(varis.Vector{0.0, 0.0})
-	n.Calculate(varis.Vector{1.0, 0.0})
-	n.Calculate(varis.Vector{0.0, 1.0})
-	n.Calculate(varis.Vector{1.0, 1.0})
-
-	// Model example section
-	type Model struct {
-		Network *varis.Perceptron
-		X1      varis.BooleanField `direction:"input"`
-		X2      varis.BooleanField `direction:"input"`
-		O       varis.BooleanField `direction:"output"`
-	}
-
-	f := Model{Network: &n}
-
-	calculate := varis.GenerateRunFunction(f)
-
-	calculate([]interface{}{false, false})
-	calculate([]interface{}{true, false})
-	calculate([]interface{}{false, true})
-	calculate([]interface{}{true, true})
+	n.Calculate(varis.Vector{0.0, 0.0}) // Output: [0.9816677167418877]
+	n.Calculate(varis.Vector{1.0, 0.0}) // Output: [0.02076530509106318]
+	n.Calculate(varis.Vector{0.0, 1.0}) // Output: [0.018253250887023762]
+	n.Calculate(varis.Vector{1.0, 1.0}) // Output: [0.9847884089930481]
 }
 
 ```
-## Roadmap
+## Roadmap 0.2-0.5
+- Add locks
+- Add trainig channels
+- Improve speed
+- Add more fields to model. Make models more comfortable for use.
 - Add error return to functions.
 - Create more tests and benchmarks.
-- Implement Models (Normalize data from bool, integer, array etc.)
+- Create server and cli realization for use Varis as a application
 
-
+## Alternatives
+[https://github.com/fxsjy/gonn] | [https://github.com/stevenmiller888/go-mind] | [https://github.com/made2591/go-perceptron-go]
