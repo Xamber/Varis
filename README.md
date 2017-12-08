@@ -10,6 +10,7 @@ Neural Networks with GO
 [![API Reference](https://camo.githubusercontent.com/915b7be44ada53c290eb157634330494ebe3e30a/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f676f6c616e672f6764646f3f7374617475732e737667)](https://godoc.org/github.com/Xamber/Varis)
 [![codecov](https://codecov.io/gh/Xamber/Varis/branch/master/graph/badge.svg)](https://codecov.io/gh/Xamber/Varis)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/xamber/Varis/blob/master/LICENSE.md)
+[![Release](https://img.shields.io/github/tag/xamber/varis.svg?label=latest)](https://github.com/Xamber/Varis/releases/tag/release-0.1)
 
 ## About Package
 Some time ago I decided to learn Go language and neural networks.
