@@ -7,10 +7,13 @@ import (
 
 // Perceptron implement Neural Network Perceptron by collect layers with Neurons and input/output channels.
 type Perceptron struct {
-	layers [][]Neuron
+	layers []Layer
 	input  []chan float64
 	output []chan float64
 }
+
+// Layer collect Neurons.
+type Layer []Neuron
 
 // Calculate run Network calculations by wait signals from input channels and send signals to output array of chan.
 func (n *Perceptron) Calculate(input Vector) Vector {
