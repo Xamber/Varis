@@ -18,6 +18,8 @@ func (t *PerceptronTrainer) BackPropagation(times int) {
 			expected := frame[1]
 			results := t.Network.Calculate(frame[0])
 
+			t.Network.mux.Lock()
+
 			layerDelta := 0.0
 			for l := len(t.Network.layers) - 1; l > 0; l-- {
 				nextLayerDelta := 0.00
@@ -33,6 +35,8 @@ func (t *PerceptronTrainer) BackPropagation(times int) {
 				}
 				layerDelta = nextLayerDelta
 			}
+
+			t.Network.mux.Unlock()
 		}
 	}
 }

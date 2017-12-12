@@ -3,6 +3,7 @@ package varis
 import (
 	"fmt"
 	"math/rand"
+	"sync"
 )
 
 // Perceptron implement Neural Network Perceptron by collect layers with Neurons and input/output channels.
@@ -10,6 +11,7 @@ type Perceptron struct {
 	layers []Layer
 	input  []chan float64
 	output []chan float64
+	mux    sync.Mutex
 }
 
 // Layer collect Neurons.
@@ -17,9 +19,13 @@ type Layer []Neuron
 
 // Calculate run Network calculations by wait signals from input channels and send signals to output array of chan.
 func (n *Perceptron) Calculate(input Vector) Vector {
+
 	if len(input) != len(n.layers[0]) {
 		panic("Check count of input value")
 	}
+
+	n.mux.Lock()
+	defer n.mux.Unlock()
 
 	input.broadcast(n.input)
 	output := collectVector(n.output)
