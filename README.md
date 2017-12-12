@@ -27,7 +27,7 @@ Thank you. Artem.
 - No dependencies
 
 ## Installation
-    go get https://github.com/Xamber/Varis
+    go get github.com/Xamber/Varis
 
 ## Usage
 ```go
