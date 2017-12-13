@@ -59,7 +59,7 @@ func main() {
 ```
 ## Roadmap 0.2-0.5
 - Add locks
-- Add trainig channels
+- Add training channels
 - Improve speed
 - Add more fields to model. Make models more comfortable for use.
 - Add error return to functions.
