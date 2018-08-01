@@ -34,11 +34,11 @@ Thank you. Artem.
 package main
 
 import (
-	"github.com/xamber/Varis"
+	"github.com/Xamber/Varis"
 )
 
 func main() {
-	n := varis.CreatePerceptron(2, 3, 1)
+	net := varis.CreatePerceptron(2, 3, 1)
 
 	dataset := varis.Dataset{
 		{varis.Vector{0.0, 0.0}, varis.Vector{1.0}},
@@ -47,13 +47,18 @@ func main() {
 		{varis.Vector{1.0, 1.0}, varis.Vector{1.0}},
 	}
 
-	varis.BackPropagation(&n, dataset, 10000)
+	trainer := varis.PerceptronTrainer{
+		Network: &net,
+		Dataset: dataset,
+	}
+
+	trainer.BackPropagation(10000)
 	varis.PrintCalculation = true
 
-	n.Calculate(varis.Vector{0.0, 0.0}) // Output: [0.9816677167418877]
-	n.Calculate(varis.Vector{1.0, 0.0}) // Output: [0.02076530509106318]
-	n.Calculate(varis.Vector{0.0, 1.0}) // Output: [0.018253250887023762]
-	n.Calculate(varis.Vector{1.0, 1.0}) // Output: [0.9847884089930481]
+	net.Calculate(varis.Vector{0.0, 0.0}) // Output: [0.9816677167418877]
+	net.Calculate(varis.Vector{1.0, 0.0}) // Output: [0.02076530509106318]
+	net.Calculate(varis.Vector{0.0, 1.0}) // Output: [0.018253250887023762]
+	net.Calculate(varis.Vector{1.0, 1.0}) // Output: [0.9847884089930481]
 }
 
 ```
