@@ -73,14 +73,3 @@ func TestPanicNN(t *testing.T) {
 	n := CreatePerceptron(2, 3, 1)
 	n.Calculate(Vector{1.1, 2.2, 3.3})
 }
-
-func TestPanicBooleanFiled(t *testing.T) {
-	defer func() {
-		if r := recover(); r == nil {
-			t.Errorf("The code did not panic")
-		}
-	}()
-
-	field := BooleanField{}
-	field.toSignal("asdasdasd")
-}

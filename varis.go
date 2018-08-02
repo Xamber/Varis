@@ -6,14 +6,16 @@ import (
 	"time"
 )
 
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
+// Type for activation and deactivation functions. It should receive float64 and return float64
+type neuronFunction func(x float64) float64
 
 // PrintCalculation logs all calculate calls (print input and output).
 var PrintCalculation = false
 
-type neuronFunction func(x float64) float64
+// Seed rand package
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 // ACTIVATION store default activation function.
 var ACTIVATION neuronFunction = func(x float64) float64 {

@@ -74,36 +74,6 @@ func TestEncodeJson(t *testing.T) {
 	}
 }
 
-func TestModel(t *testing.T) {
-	n := CreatePerceptron(2, 3, 1)
-
-	trainer := PerceptronTrainer{&n, dataset}
-	trainer.BackPropagation(10000)
-
-	PrintCalculation = true
-
-	n.Calculate(Vector{0.0, 0.0})
-	n.Calculate(Vector{1.0, 0.0})
-	n.Calculate(Vector{0.0, 1.0})
-	n.Calculate(Vector{1.0, 1.0})
-
-	type Model struct {
-		Network *Perceptron
-		X1      BooleanField `direction:"input"`
-		X2      BooleanField `direction:"input"`
-		O       BooleanField `direction:"output"`
-	}
-
-	f := Model{Network: &n}
-
-	calculate := GenerateRunFunction(f)
-
-	calculate([]interface{}{false, false})
-	calculate([]interface{}{true, false})
-	calculate([]interface{}{false, true})
-	calculate([]interface{}{true, true})
-}
-
 func Example() {
 	rand.Seed(1338)
 	PrintCalculation = false
@@ -128,7 +98,7 @@ func Example() {
 
 	// Output:
 	// Input: [0 0] Output: [0.9816677167418877]
-	// Input: [1 0] Output: [0.02076530509106318]
-	// Input: [0 1] Output: [0.018253250887023762]
-	// Input: [1 1] Output: [0.9847884089930481]
+	// Input: [1 0] Output: [0.020765305091063144]
+	// Input: [0 1] Output: [0.01825325088702373]
+	// Input: [1 1] Output: [0.9847884089930483]
 }

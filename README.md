@@ -66,7 +66,6 @@ func main() {
 - Add locks
 - Add training channels
 - Improve speed
-- Add more fields to model. Make models more comfortable for use.
 - Add error return to functions.
 - Create more tests and benchmarks.
 - Create server and cli realization for use Varis as a application

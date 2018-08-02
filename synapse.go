@@ -4,7 +4,6 @@ import "sync"
 
 // ConnectNeurons connect two neurons.
 // It creates synapse and add connection to input and output Neuron.
-// Have weight.
 func ConnectNeurons(in Neuron, out Neuron, weight float64) {
 	syn := &synapse{
 		weight:    weight,
@@ -20,6 +19,9 @@ func ConnectNeurons(in Neuron, out Neuron, weight float64) {
 	go syn.live()
 }
 
+// synapse is connection between two neurons.
+// Store pointers to input and output neuron.
+// Have two channels for data and weight.
 type synapse struct {
 	weight    float64
 	in        chan float64
@@ -30,6 +32,7 @@ type synapse struct {
 }
 
 // ConnectNeurons live is function for goroutine.
+// It receive data from input. Multiply input to weight and send to output.
 func (syn *synapse) live() {
 	for {
 		syn.cache = <-syn.in
@@ -38,6 +41,7 @@ func (syn *synapse) live() {
 	}
 }
 
+// connection store input and output synapses
 type connection struct {
 	inSynapses  []*synapse
 	outSynapses []*synapse
